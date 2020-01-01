@@ -1,0 +1,4 @@
+bin
+obj
+src/mbean
+src/test_mbean
