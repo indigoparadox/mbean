@@ -25,13 +25,20 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
    maug_mlock( data_h, data );
    maug_cleanup_if_null_alloc( struct MBEAN_DATA*, data );
 
-   /* Clear the screen and iterate the bean grid. */
-   mbean_iter( data );
+   debug_printf( 1, "wait: " SIZE_T_FMT, data->wait );
+   if( data->wait > 0 ) {
+      data->wait--;
+   } else {
+      data->wait = MBEAN_TICK_WAIT;
 
-   /* Drop a bean set if we can. */
-   if( (MBEAN_FLAG_SETTLED & data->flags) ) {
-      mbean_drop( data, 1, 3 );
-      mbean_drop( data, 2, 4 );
+      /* Clear the screen and iterate the bean grid. */
+      mbean_iter( data );
+
+      /* Drop a bean set if we can. */
+      if( (MBEAN_FLAG_SETTLED & data->flags) ) {
+         mbean_drop( data, 1, 3 );
+         mbean_drop( data, 2, 4 );
+      }
    }
 
    /* === Input === */
@@ -63,20 +70,26 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
    retroflat_draw_lock( NULL );
 
    retroflat_rect(
-      NULL, RETROFLAT_COLOR_GRAY, 0, 0,
+      NULL, RETROFLAT_COLOR_BLACK, 0, 0,
       retroflat_screen_w(), retroflat_screen_h(),
       RETROFLAT_FLAGS_FILL );
+
+   retroflat_rect(
+      NULL, RETROFLAT_COLOR_WHITE, 
+      MBEAN_GRID_X_PX, MBEAN_GRID_Y_PX,
+      MBEAN_GRID_W_PX, MBEAN_GRID_H_PX,
+      0 );
 
    /* Roughly display the bean grid. */
    for( y = 0 ; MBEAN_GRID_H > y ; y++ ) {
       for( x = 0 ; MBEAN_GRID_W > x ; x++ ) {
          if( data->grid[x][y] ) {
             retroflat_ellipse( NULL, RETROFLAT_COLOR_RED,
-               x * MBEAN_BEAN_W,
-               y * MBEAN_BEAN_W,
+               MBEAN_GRID_X_PX + (x * MBEAN_BEAN_W),
+               MBEAN_GRID_Y_PX + (y * MBEAN_BEAN_W),
                MBEAN_BEAN_W,
                MBEAN_BEAN_W,
-               RETROFLAT_FLAGS_FILL );
+               0 );
          }
       }
    }
