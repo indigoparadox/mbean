@@ -2,6 +2,10 @@
 #ifndef MBEAN_H
 #define MBEAN_H
 
+#ifndef MBEAN_BEAN_W
+#  define MBEAN_BEAN_W 8
+#endif /* !MBEAN_BEAN_W */
+
 #define MBEAN_GRID_W 10
 #define MBEAN_GRID_H 15
 
@@ -24,12 +28,13 @@
  *  Y
  */
 
-struct mbean_grid {
+struct MBEAN_DATA {
    uint8_t flags;
+   struct RETROCON con;
    int8_t grid[MBEAN_GRID_W][MBEAN_GRID_H];
 };
 
-void mbean_iter( struct mbean_grid* g );
+void mbean_iter( struct MBEAN_DATA* g );
 
 #endif /* MBEAN_H */
 
