@@ -23,9 +23,6 @@
 
 #include <stdint.h>
 
-#define mbean_drop( g, b, col ) \
-   (g)->grid[col][0] = b;
-
 /***
  * grid[X][Y]
  *
@@ -42,10 +39,27 @@ struct MBEAN_DATA {
    uint8_t flags;
    struct RETROCON con;
    int8_t grid[MBEAN_GRID_W][MBEAN_GRID_H];
+   int8_t drops[2];
+   size_t drops_sz;
+   int8_t drops_rot;
+   int8_t drops_x;
+   int8_t drops_y;
    size_t wait;
 };
 
 void mbean_iter( struct MBEAN_DATA* g );
+
+void mbean_drop( struct MBEAN_DATA* g, int8_t x, int8_t y );
+
+void mbean_plop_drops( struct MBEAN_DATA* g );
+
+#ifdef MBEAN_C
+int8_t MAUG_CONST g_mbean_drop_rot_x[4] = { 1, 0, -1, 0 };
+int8_t MAUG_CONST g_mbean_drop_rot_y[4] = { 0, 1, 0, -1 };
+#else
+extern MAUG_CONST int8_t g_mbean_drop_rot_x[4];
+extern MAUG_CONST int8_t g_mbean_drop_rot_y[4];
+#endif /* MBEAN_C */
 
 #endif /* MBEAN_H */
 

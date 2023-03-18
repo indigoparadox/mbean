@@ -18,14 +18,14 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
    struct MBEAN_DATA* data = NULL;
    MERROR_RETVAL retval = MERROR_OK;
    size_t x = 0,
-      y = 0;
+      y = 0,
+      i = 0;
    int input = 0;
    struct RETROFLAT_INPUT input_evt;
 
    maug_mlock( data_h, data );
    maug_cleanup_if_null_alloc( struct MBEAN_DATA*, data );
 
-   debug_printf( 1, "wait: " SIZE_T_FMT, data->wait );
    if( data->wait > 0 ) {
       data->wait--;
    } else {
@@ -35,9 +35,12 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
       mbean_iter( data );
 
       /* Drop a bean set if we can. */
-      if( (MBEAN_FLAG_SETTLED & data->flags) ) {
+      if( (MBEAN_FLAG_SETTLED & data->flags) && 0 == data->drops_sz ) {
+         mbean_drop( data, 3, 0 );
+         /*
          mbean_drop( data, 1, 3 );
          mbean_drop( data, 2, 4 );
+         */
       }
    }
 
@@ -49,9 +52,11 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
 
    switch( input ) {
    case RETROFLAT_KEY_RIGHT:
+      data->drops_x++;
       break;
 
    case RETROFLAT_KEY_LEFT:
+      data->drops_x--;
       break;
 
    case RETROFLAT_KEY_DOWN:
@@ -92,6 +97,17 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
                0 );
          }
       }
+   }
+
+   for( i = 0 ; data->drops_sz > i ; i++ ) {
+      x = data->drops_x + (i * g_mbean_drop_rot_x[data->drops_rot]);
+      y = data->drops_y + (i * g_mbean_drop_rot_y[data->drops_rot]);
+      retroflat_ellipse( NULL, RETROFLAT_COLOR_RED,
+         MBEAN_GRID_X_PX + (x * MBEAN_BEAN_W),
+         MBEAN_GRID_Y_PX + (y * MBEAN_BEAN_W),
+         MBEAN_BEAN_W,
+         MBEAN_BEAN_W,
+         0 );
    }
 
    retroflat_draw_release( NULL );
