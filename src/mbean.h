@@ -53,12 +53,16 @@ void mbean_drop( struct MBEAN_DATA* g, int8_t x, int8_t y );
 
 void mbean_plop_drops( struct MBEAN_DATA* g );
 
+void mbean_move_drops( struct MBEAN_DATA* g, int8_t x_m );
+
 #ifdef MBEAN_C
-int8_t MAUG_CONST g_mbean_drop_rot_x[4] = { 1, 0, -1, 0 };
-int8_t MAUG_CONST g_mbean_drop_rot_y[4] = { 0, 1, 0, -1 };
+int8_t MAUG_CONST gc_mbean_drop_rot_x[4] = { 1, 0, -1, 0 };
+int8_t MAUG_CONST gc_mbean_drop_rot_y[4] = { 0, 1, 0, -1 };
+RETROFLAT_COLOR g_mbean_colors[5];
 #else
-extern MAUG_CONST int8_t g_mbean_drop_rot_x[4];
-extern MAUG_CONST int8_t g_mbean_drop_rot_y[4];
+extern MAUG_CONST int8_t gc_mbean_drop_rot_x[4];
+extern MAUG_CONST int8_t gc_mbean_drop_rot_y[4];
+extern RETROFLAT_COLOR g_mbean_colors[5];
 #endif /* MBEAN_C */
 
 #endif /* MBEAN_H */

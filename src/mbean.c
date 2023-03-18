@@ -29,8 +29,8 @@ void mbean_iter( struct MBEAN_DATA* g ) {
 
    /* Drop the drops first so they can unsettle the grid if they drop. */
    for( i = 0 ; g->drops_sz > i ; i++ ) {
-      x = g->drops_x + (i * g_mbean_drop_rot_x[g->drops_rot]);
-      y = g->drops_y + (i * g_mbean_drop_rot_y[g->drops_rot]);
+      x = g->drops_x + (i * gc_mbean_drop_rot_x[g->drops_rot]);
+      y = g->drops_y + (i * gc_mbean_drop_rot_y[g->drops_rot]);
       if( y >= MBEAN_GRID_H - 1 || g->grid[x][y + 1] ) {
          /* Place the dropping beans on the grid. */
          mbean_plop_drops( g );
@@ -57,8 +57,8 @@ settle_grid:
 
 void mbean_drop( struct MBEAN_DATA* g, int8_t x, int8_t y ) {
    g->drops_sz = 2;
-   g->drops[0] = 3;
-   g->drops[1] = 4;
+   g->drops[0] = 1 + rand() % 4;
+   g->drops[1] = 1 + rand() % 4;
    g->drops_x = x;
    g->drops_y = 0;
    g->drops_rot = 0;
@@ -70,11 +70,32 @@ void mbean_plop_drops( struct MBEAN_DATA* g ) {
       by = 0;
 
    for( i = 0 ; g->drops_sz > i ; i++ ) {
-      bx = g->drops_x + (i * g_mbean_drop_rot_x[g->drops_rot]);
-      by = g->drops_y + (i * g_mbean_drop_rot_y[g->drops_rot]);
+      bx = g->drops_x + (i * gc_mbean_drop_rot_x[g->drops_rot]);
+      by = g->drops_y + (i * gc_mbean_drop_rot_y[g->drops_rot]);
       g->grid[bx][by] = g->drops[i];
    }
 
    g->drops_sz = 0;
+}
+
+void mbean_move_drops( struct MBEAN_DATA* g, int8_t x_m ) {
+   int8_t x_sz = gc_mbean_drop_rot_x[g->drops_rot];
+
+   x_sz *= g->drops_sz;
+
+   /* Check if drops_x + size_t * offset is out of bounds, depending on
+    * rotation.
+    */
+   if(
+      g->drops_x + x_m + x_sz <= MBEAN_GRID_W &&
+      (
+         (0 == g->drops_rot && g->drops_x + x_m >= 0) ||
+         (1 == g->drops_rot && g->drops_x + x_m >= 0) ||
+         (3 == g->drops_rot && g->drops_x + x_m >= 0) ||
+         (2 == g->drops_rot && g->drops_x + x_m + x_sz >= 0)
+      )
+   ) {
+      g->drops_x += x_m;
+   }
 }
 
