@@ -52,11 +52,11 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
 
    switch( input ) {
    case RETROFLAT_KEY_RIGHT:
-      data->drops_x++;
+      mbean_move_drops( data, 1 );
       break;
 
    case RETROFLAT_KEY_LEFT:
-      data->drops_x--;
+      mbean_move_drops( data, -1 );
       break;
 
    case RETROFLAT_KEY_DOWN:
@@ -89,7 +89,7 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
    for( y = 0 ; MBEAN_GRID_H > y ; y++ ) {
       for( x = 0 ; MBEAN_GRID_W > x ; x++ ) {
          if( data->grid[x][y] ) {
-            retroflat_ellipse( NULL, RETROFLAT_COLOR_RED,
+            retroflat_ellipse( NULL, g_mbean_colors[data->grid[x][y]],
                MBEAN_GRID_X_PX + (x * MBEAN_BEAN_W),
                MBEAN_GRID_Y_PX + (y * MBEAN_BEAN_W),
                MBEAN_BEAN_W,
@@ -100,9 +100,9 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
    }
 
    for( i = 0 ; data->drops_sz > i ; i++ ) {
-      x = data->drops_x + (i * g_mbean_drop_rot_x[data->drops_rot]);
-      y = data->drops_y + (i * g_mbean_drop_rot_y[data->drops_rot]);
-      retroflat_ellipse( NULL, RETROFLAT_COLOR_RED,
+      x = data->drops_x + (i * gc_mbean_drop_rot_x[data->drops_rot]);
+      y = data->drops_y + (i * gc_mbean_drop_rot_y[data->drops_rot]);
+      retroflat_ellipse( NULL, g_mbean_colors[data->drops[i]],
          MBEAN_GRID_X_PX + (x * MBEAN_BEAN_W),
          MBEAN_GRID_Y_PX + (y * MBEAN_BEAN_W),
          MBEAN_BEAN_W,
@@ -144,6 +144,11 @@ int main( int argc, char* argv[] ) {
    data->con.lbuffer_color = RETROFLAT_COLOR_WHITE;
    data->con.sbuffer_color = RETROFLAT_COLOR_GRAY;
    data->con.bg_color = RETROFLAT_COLOR_BLACK;
+
+   g_mbean_colors[1] = RETROFLAT_COLOR_GRAY;
+   g_mbean_colors[2] = RETROFLAT_COLOR_RED;
+   g_mbean_colors[3] = RETROFLAT_COLOR_GREEN;
+   g_mbean_colors[4] = RETROFLAT_COLOR_BLUE;
 
    maug_munlock( data_h, data );
 
