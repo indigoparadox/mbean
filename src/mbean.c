@@ -1,7 +1,10 @@
 
+#include <maug.h>
+#include <retrocon.h>
+
 #include "mbean.h"
 
-void mbean_iter_gravity( struct mbean_grid* g, int8_t bx, int8_t by ) {
+void mbean_iter_gravity( struct MBEAN_DATA* g, int8_t bx, int8_t by ) {
 
    /* Never do anything for the bottom row. */
    if( by >= MBEAN_GRID_H - 1 ) {
@@ -18,7 +21,7 @@ void mbean_iter_gravity( struct mbean_grid* g, int8_t bx, int8_t by ) {
    }
 }
 
-void mbean_iter( struct mbean_grid* g ) {
+void mbean_iter( struct MBEAN_DATA* g ) {
    int8_t x = 0;
    int8_t y = 0;
 

@@ -1,48 +1,147 @@
 
+#define MAUG_C
+#include <maug.h>
+
+#define RETROFLT_C
+#include <retroflt.h>
+
+#define RETROCON_C
+#include <retrocon.h>
+
 #include "mbean.h"
 
 #include <stdbool.h>
 #include <stdio.h>
 #include <unistd.h>
 
-int main( int argc, char** argv ) {
-   struct mbean_grid g = { 0 };
-   bool running = true;
-   int x = 0, y = 0;
+void mbean_loop( MAUG_MHANDLE data_h ) {
+   struct MBEAN_DATA* data = NULL;
+   MERROR_RETVAL retval = MERROR_OK;
+   size_t x = 0,
+      y = 0;
+   int input = 0;
+   struct RETROFLAT_INPUT input_evt;
 
-   while( running ) {
-      /* Clear the screen and iterate the bean grid. */
-      printf( "\e[1;1H\e[2J" );
-      mbean_iter( &g );
+   maug_mlock( data_h, data );
+   maug_cleanup_if_null_alloc( struct MBEAN_DATA*, data );
 
-      /* Drop a bean set if we can. */
-      if( MBEAN_FLAG_SETTLED & g.flags ) {
-         mbean_drop( &g, 1, 3 );
-         mbean_drop( &g, 2, 4 );
-      }
+   /* Clear the screen and iterate the bean grid. */
+   mbean_iter( data );
 
-      /* Roughly display the bean grid. */
-      for( y = 0 ; MBEAN_GRID_H > y ; y++ ) {
-         printf( "|" );
-         for( x = 0 ; MBEAN_GRID_W > x ; x++ ) {
-            if( !g.grid[x][y] ) {
-               printf( " " );
-            } else {
-               printf( "%c", (65 + g.grid[x][y]) );
-            }
-         }
-         printf( "|\n" );
-      }
-      printf( "|" );
-      for( x = 0 ; MBEAN_GRID_W > x ; x++ ) {
-         printf( "-" );
-      }
-      printf( "|\n\n" );
-
-      /* Wait a moment. */
-      sleep( 1 );
+   /* Drop a bean set if we can. */
+   if( (MBEAN_FLAG_SETTLED & data->flags) ) {
+      mbean_drop( data, 1, 3 );
+      mbean_drop( data, 2, 4 );
    }
 
-   return 0;
+   /* === Input === */
+
+   input = retroflat_poll_input( &input_evt );
+
+   retrocon_input( &(data->con), &input );
+
+   switch( input ) {
+   case RETROFLAT_KEY_RIGHT:
+      break;
+
+   case RETROFLAT_KEY_LEFT:
+      break;
+
+   case RETROFLAT_KEY_DOWN:
+      break;
+
+   case RETROFLAT_KEY_SPACE:
+      break;
+
+   case RETROFLAT_KEY_ESC:
+      retroflat_quit( 0 );
+      break;
+   }
+ 
+   /*  === Drawing === */
+
+   retroflat_draw_lock( NULL );
+
+   retroflat_rect(
+      NULL, RETROFLAT_COLOR_GRAY, 0, 0,
+      retroflat_screen_w(), retroflat_screen_h(),
+      RETROFLAT_FLAGS_FILL );
+
+   /* Roughly display the bean grid. */
+   for( y = 0 ; MBEAN_GRID_H > y ; y++ ) {
+      for( x = 0 ; MBEAN_GRID_W > x ; x++ ) {
+         if( data->grid[x][y] ) {
+            retroflat_ellipse( NULL, RETROFLAT_COLOR_RED,
+               x * MBEAN_BEAN_W,
+               y * MBEAN_BEAN_W,
+               MBEAN_BEAN_W,
+               MBEAN_BEAN_W,
+               RETROFLAT_FLAGS_FILL );
+         }
+      }
+   }
+
+   retroflat_draw_release( NULL );
+
+cleanup:
+
+   if( NULL != data ) {
+      maug_munlock( data_h, data );
+   }
+
+   if( MERROR_OK != retval ) {
+      retroflat_quit( retval );
+   }
 }
+
+int main( int argc, char* argv[] ) {
+   int retval = 0;
+   MAUG_MHANDLE data_h = NULL;
+   struct RETROFLAT_ARGS args;
+   struct MBEAN_DATA* data = NULL;
+
+   /* === Setup === */
+
+   maug_mzero( &args, sizeof( struct RETROFLAT_ARGS ) );
+
+   data_h = maug_malloc( 1, sizeof( struct MBEAN_DATA ) );
+   maug_cleanup_if_null_alloc( MAUG_MHANDLE, data_h );
+
+   maug_mlock( data_h, data );
+
+   retval = retrocon_init( &(data->con) );
+   maug_cleanup_if_not_ok();
+
+   data->con.lbuffer_color = RETROFLAT_COLOR_WHITE;
+   data->con.sbuffer_color = RETROFLAT_COLOR_GRAY;
+   data->con.bg_color = RETROFLAT_COLOR_BLACK;
+
+   maug_munlock( data_h, data );
+
+   args.screen_w = 320;
+   args.screen_h = 200;
+   args.title = "mbean";
+
+   retval = retroflat_init( argc, argv, &args );
+   maug_cleanup_if_not_ok();
+
+   /* === Main Loop === */
+
+   retroflat_loop( (retroflat_loop_iter)mbean_loop, data_h );
+
+cleanup:
+
+#ifndef RETROFLAT_OS_WASM
+
+   if( NULL != data ) {
+      maug_mfree( data_h );
+   }
+
+   retroflat_shutdown( retval );
+
+#endif /* !RETROFLAT_OS_WASM */
+
+   return retval;
+}
+END_OF_MAIN()
 
