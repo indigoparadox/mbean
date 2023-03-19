@@ -107,3 +107,75 @@ void mbean_move_drops( struct MBEAN_DATA* g, int8_t x_m ) {
    }
 }
 
+struct MBEAN_GC_NODE* mbean_gc_probe(
+   struct MBEAN_DATA* g, int8_t x, int8_t y,
+   struct MBEAN_GC_NODE* nodes, size_t* nodes_sz
+) {
+   size_t i = 0;
+   struct MBEAN_GC_NODE* self;
+
+   /* If we've been called on a node, it matches the previous (or is the
+    * first in a probe!) */
+   self = &(nodes[*nodes_sz]);
+   self->x = x;
+   self->y = y;
+   self->bean = g->grid[x][y];
+   (*nodes_sz)++;
+
+   g->probed[x][y] = 1;
+
+   for( i = 0 ; 4 > i ; i++ ) {
+      if(
+         MBEAN_GRID_W <= x + gc_mbean_drop_rot_x[i] ||
+         0 > x + gc_mbean_drop_rot_x[i] ||
+         MBEAN_GRID_H <= y + gc_mbean_drop_rot_y[i] ||
+         0 > y + gc_mbean_drop_rot_y[i]
+      ) {
+         /* Don't go off the grid! */
+         continue;
+      }
+
+      if(
+         g->grid[x + gc_mbean_drop_rot_x[i]][y + gc_mbean_drop_rot_y[i]]
+         == g->grid[x][y]
+      ) {
+         self->neighbors[i] = mbean_gc_probe(
+            g, x + gc_mbean_drop_rot_x[i], y + gc_mbean_drop_rot_y[i],
+            nodes, nodes_sz );
+      }
+   }
+
+   return self;
+}
+
+void mbean_gc( struct MBEAN_DATA* g ) {
+   struct MBEAN_GC_NODE nodes[MBEAN_GC_NODES_SZ_MAX];
+   size_t nodes_sz;
+   int8_t x = 0,
+      y = 0;
+
+   /* Reset probe/purge grids. */
+   memset( g->probed, '\0', MBEAN_GRID_W * MBEAN_GRID_H );
+   memset( g->purge, '\0', MBEAN_GRID_W * MBEAN_GRID_H );
+
+   for( y = 0 ; MBEAN_GRID_H > y ; y++ ) {
+      for( x = 0 ; MBEAN_GRID_W > x ; x++ ) {
+         /* Skip probed or empty beans. */
+         if( g->probed[x][y] || 0 == g->grid[x][y] ) {
+            continue;
+         }
+
+         mbean_gc_probe( g, x, y, nodes, &nodes_sz );
+         
+         /* Make sure we found enough contiguous beans to vanish! */
+         if( 4 > nodes_sz ) {
+            nodes_sz = 0;
+            continue;
+         }
+
+         /* We found enough, so descend and add to purge grid! */
+         /* TODO */
+      }
+   }
+}
+
