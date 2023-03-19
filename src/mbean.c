@@ -114,6 +114,10 @@ struct MBEAN_GC_NODE* mbean_gc_probe(
    size_t i = 0;
    struct MBEAN_GC_NODE* self;
 
+   debug_printf( 1, "probe #" SIZE_T_FMT ": %d, %d", *nodes_sz, x, y );
+
+   g->probed[x][y] = 1;
+
    /* If we've been called on a node, it matches the previous (or is the
     * first in a probe!) */
    self = &(nodes[*nodes_sz]);
@@ -121,8 +125,6 @@ struct MBEAN_GC_NODE* mbean_gc_probe(
    self->y = y;
    self->bean = g->grid[x][y];
    (*nodes_sz)++;
-
-   g->probed[x][y] = 1;
 
    for( i = 0 ; 4 > i ; i++ ) {
       if(
@@ -132,6 +134,13 @@ struct MBEAN_GC_NODE* mbean_gc_probe(
          0 > y + gc_mbean_drop_rot_y[i]
       ) {
          /* Don't go off the grid! */
+         continue;
+      }
+
+      if(
+         g->probed[x + gc_mbean_drop_rot_x[i]][y + gc_mbean_drop_rot_y[i]]
+      ) {
+         /* Skip probed grid cells. */
          continue;
       }
 
@@ -150,7 +159,8 @@ struct MBEAN_GC_NODE* mbean_gc_probe(
 
 void mbean_gc( struct MBEAN_DATA* g ) {
    struct MBEAN_GC_NODE nodes[MBEAN_GC_NODES_SZ_MAX];
-   size_t nodes_sz;
+   size_t nodes_sz = 0,
+      i = 0;
    int8_t x = 0,
       y = 0;
 
@@ -160,6 +170,8 @@ void mbean_gc( struct MBEAN_DATA* g ) {
 
    for( y = 0 ; MBEAN_GRID_H > y ; y++ ) {
       for( x = 0 ; MBEAN_GRID_W > x ; x++ ) {
+         nodes_sz = 0;
+
          /* Skip probed or empty beans. */
          if( g->probed[x][y] || 0 == g->grid[x][y] ) {
             continue;
@@ -169,12 +181,25 @@ void mbean_gc( struct MBEAN_DATA* g ) {
          
          /* Make sure we found enough contiguous beans to vanish! */
          if( 4 > nodes_sz ) {
-            nodes_sz = 0;
             continue;
          }
 
          /* We found enough, so descend and add to purge grid! */
-         /* TODO */
+         for( i = 0 ; nodes_sz > i ; i++ ) {
+            g->purge[nodes[i].x][nodes[i].y] = 1;
+         }
+      }
+   }
+
+   for( y = 0 ; MBEAN_GRID_H > y ; y++ ) {
+      for( x = 0 ; MBEAN_GRID_W > x ; x++ ) {
+         if( g->purge[x][y] ) {
+            g->grid[x][y] = 0;
+            g->purge[x][y] = 0;
+
+            /* Unsettle grid. */
+            g->flags &= !MBEAN_FLAG_SETTLED;
+         }
       }
    }
 }

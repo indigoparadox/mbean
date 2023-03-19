@@ -28,7 +28,12 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
 
       /* Drop a bean set if we can. */
       if( (MBEAN_FLAG_SETTLED & data->flags) && 0 == data->drops_sz ) {
-         mbean_drop( data, 3, 0 );
+         debug_printf( 1, "attempting gc..." );
+         mbean_gc( data );
+         if( (MBEAN_FLAG_SETTLED & data->flags) && 0 == data->drops_sz ) {
+            debug_printf( 1, "dropping..." );
+            mbean_drop( data, 3, 0 );
+         }
          /*
          mbean_drop( data, 1, 3 );
          mbean_drop( data, 2, 4 );

@@ -66,6 +66,12 @@ void mbean_plop_drops( struct MBEAN_DATA* g );
 
 void mbean_move_drops( struct MBEAN_DATA* g, int8_t x_m );
 
+struct MBEAN_GC_NODE* mbean_gc_probe(
+   struct MBEAN_DATA* g, int8_t x, int8_t y,
+   struct MBEAN_GC_NODE* nodes, size_t* nodes_sz );
+
+void mbean_gc( struct MBEAN_DATA* g );
+
 #ifdef MBEAN_C
 int8_t MAUG_CONST gc_mbean_drop_rot_x[4] = { 1, 0, -1, 0 };
 int8_t MAUG_CONST gc_mbean_drop_rot_y[4] = { 0, 1, 0, -1 };
