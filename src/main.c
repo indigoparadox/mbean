@@ -63,6 +63,10 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
       break;
 
    case RETROFLAT_KEY_SPACE:
+      data->drops_rot++;
+      if( 4 <= data->drops_rot ) {
+         data->drops_rot = 0;
+      }
       break;
 
    case RETROFLAT_KEY_ESC:
