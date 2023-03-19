@@ -10,6 +10,10 @@
 #  define MBEAN_TICK_WAIT 10
 #endif /* !MBEAN_TICK_WAIT */
 
+#ifndef MBEAN_GC_NODES_SZ_MAX
+#  define MBEAN_GC_NODES_SZ_MAX 20
+#endif /* !MBEAN_GC_NODES_SZ_MAX */
+
 #define MBEAN_GRID_W 10
 #define MBEAN_GRID_H 15
 
@@ -36,6 +40,8 @@
 struct MBEAN_DATA {
    uint8_t flags;
    struct RETROCON con;
+   int8_t probed[MBEAN_GRID_W][MBEAN_GRID_H];
+   int8_t purge[MBEAN_GRID_W][MBEAN_GRID_H];
    int8_t grid[MBEAN_GRID_W][MBEAN_GRID_H];
    int8_t drops[2];
    size_t drops_sz;
@@ -43,6 +49,13 @@ struct MBEAN_DATA {
    int8_t drops_x;
    int8_t drops_y;
    size_t wait;
+};
+
+struct MBEAN_GC_NODE {
+   int8_t x;
+   int8_t y;
+   int8_t bean;
+   struct MBEAN_GC_NODE* neighbors[4];
 };
 
 void mbean_iter( struct MBEAN_DATA* g );
