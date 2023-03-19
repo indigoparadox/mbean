@@ -86,15 +86,17 @@ void mbean_move_drops( struct MBEAN_DATA* g, int8_t x_m ) {
    /* Check if drops_x + size_t * offset is out of bounds, depending on
     * rotation.
     */
-   if(
-      g->drops_x + x_m + x_sz <= MBEAN_GRID_W &&
-      (
-         (0 == g->drops_rot && g->drops_x + x_m >= 0) ||
-         (1 == g->drops_rot && g->drops_x + x_m >= 0) ||
-         (3 == g->drops_rot && g->drops_x + x_m >= 0) ||
-         (2 == g->drops_rot && g->drops_x + x_m + x_sz >= 0)
-      )
-   ) {
+   if( (
+      (0 == g->drops_rot && g->drops_x + x_m + x_sz <= MBEAN_GRID_W) ||
+      (1 == g->drops_rot && g->drops_x + x_m < MBEAN_GRID_W) ||
+      (2 == g->drops_rot && g->drops_x + x_m < MBEAN_GRID_W) ||
+      (3 == g->drops_rot && g->drops_x + x_m < MBEAN_GRID_W)
+   ) && (
+      (0 == g->drops_rot && g->drops_x + x_m >= 0) ||
+      (1 == g->drops_rot && g->drops_x + x_m >= 0) ||
+      (2 == g->drops_rot && g->drops_x + x_m + x_sz >= 0) ||
+      (3 == g->drops_rot && g->drops_x + x_m >= 0)
+   ) ) {
       g->drops_x += x_m;
    }
 }
