@@ -144,11 +144,6 @@ int main( int argc, char* argv[] ) {
    data->con.sbuffer_color = RETROFLAT_COLOR_GRAY;
    data->con.bg_color = RETROFLAT_COLOR_BLACK;
 
-   g_mbean_colors[1] = RETROFLAT_COLOR_GRAY;
-   g_mbean_colors[2] = RETROFLAT_COLOR_RED;
-   g_mbean_colors[3] = RETROFLAT_COLOR_GREEN;
-   g_mbean_colors[4] = RETROFLAT_COLOR_BLUE;
-
    maug_munlock( data_h, data );
 
    args.screen_w = 320;
@@ -157,6 +152,11 @@ int main( int argc, char* argv[] ) {
 
    retval = retroflat_init( argc, argv, &args );
    maug_cleanup_if_not_ok();
+
+   g_mbean_colors[1] = RETROFLAT_COLOR_GRAY;
+   g_mbean_colors[2] = RETROFLAT_COLOR_RED;
+   g_mbean_colors[3] = RETROFLAT_COLOR_GREEN;
+   g_mbean_colors[4] = RETROFLAT_COLOR_BLUE;
 
    /* === Main Loop === */
 
