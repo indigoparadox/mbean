@@ -10,10 +10,6 @@
 
 #include "mbean.h"
 
-#include <stdbool.h>
-#include <stdio.h>
-#include <unistd.h>
-
 void mbean_loop( MAUG_MHANDLE data_h ) {
    struct MBEAN_DATA* data = NULL;
    MERROR_RETVAL retval = MERROR_OK;

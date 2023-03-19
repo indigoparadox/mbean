@@ -21,8 +21,6 @@
 
 #define MBEAN_FLAG_SETTLED  0x01
 
-#include <stdint.h>
-
 /***
  * grid[X][Y]
  *
