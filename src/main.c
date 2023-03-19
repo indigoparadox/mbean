@@ -26,22 +26,16 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
    maug_mlock( data_h, data );
    maug_cleanup_if_null_alloc( struct MBEAN_DATA*, data );
 
-   if( data->wait > 0 ) {
-      data->wait--;
-   } else {
-      data->wait = MBEAN_TICK_WAIT;
+   /* Clear the screen and iterate the bean grid. */
+   mbean_iter( data );
 
-      /* Clear the screen and iterate the bean grid. */
-      mbean_iter( data );
-
-      /* Drop a bean set if we can. */
-      if( (MBEAN_FLAG_SETTLED & data->flags) && 0 == data->drops_sz ) {
-         mbean_drop( data, 3, 0 );
-         /*
-         mbean_drop( data, 1, 3 );
-         mbean_drop( data, 2, 4 );
-         */
-      }
+   /* Drop a bean set if we can. */
+   if( (MBEAN_FLAG_SETTLED & data->flags) && 0 == data->drops_sz ) {
+      mbean_drop( data, 3, 0 );
+      /*
+      mbean_drop( data, 1, 3 );
+      mbean_drop( data, 2, 4 );
+      */
    }
 
    /* === Input === */
@@ -60,6 +54,7 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
       break;
 
    case RETROFLAT_KEY_DOWN:
+      data->wait = 0;
       break;
 
    case RETROFLAT_KEY_SPACE:

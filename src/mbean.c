@@ -28,18 +28,24 @@ void mbean_iter( struct MBEAN_DATA* g ) {
    size_t i = 0;
 
    /* Drop the drops first so they can unsettle the grid if they drop. */
-   for( i = 0 ; g->drops_sz > i ; i++ ) {
-      x = g->drops_x + (i * gc_mbean_drop_rot_x[g->drops_rot]);
-      y = g->drops_y + (i * gc_mbean_drop_rot_y[g->drops_rot]);
-      if( y >= MBEAN_GRID_H - 1 || g->grid[x][y + 1] ) {
-         /* Place the dropping beans on the grid. */
-         mbean_plop_drops( g );
-         goto settle_grid;
+   if( g->wait > 0 ) {
+      g->wait--;
+   } else {
+      /* Do actual drop. */
+      g->wait = MBEAN_TICK_WAIT;
+      for( i = 0 ; g->drops_sz > i ; i++ ) {
+         x = g->drops_x + (i * gc_mbean_drop_rot_x[g->drops_rot]);
+         y = g->drops_y + (i * gc_mbean_drop_rot_y[g->drops_rot]);
+         if( y >= MBEAN_GRID_H - 1 || g->grid[x][y + 1] ) {
+            /* Place the dropping beans on the grid. */
+            mbean_plop_drops( g );
+            goto settle_grid;
+         }
       }
-   }
 
-   /* Beans still dropping. */
-   g->drops_y++;
+      /* Beans still dropping. */
+      g->drops_y++;
+   }
 
 settle_grid:
 
