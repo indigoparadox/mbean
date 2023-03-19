@@ -22,16 +22,18 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
    maug_mlock( data_h, data );
    maug_cleanup_if_null_alloc( struct MBEAN_DATA*, data );
 
-   /* Clear the screen and iterate the bean grid. */
-   mbean_iter( data );
+   if( RETROCON_FLAG_ACTIVE != (RETROCON_FLAG_ACTIVE & data->con.flags) ) {
+      /* Clear the screen and iterate the bean grid. */
+      mbean_iter( data );
 
-   /* Drop a bean set if we can. */
-   if( (MBEAN_FLAG_SETTLED & data->flags) && 0 == data->drops_sz ) {
-      mbean_drop( data, 3, 0 );
-      /*
-      mbean_drop( data, 1, 3 );
-      mbean_drop( data, 2, 4 );
-      */
+      /* Drop a bean set if we can. */
+      if( (MBEAN_FLAG_SETTLED & data->flags) && 0 == data->drops_sz ) {
+         mbean_drop( data, 3, 0 );
+         /*
+         mbean_drop( data, 1, 3 );
+         mbean_drop( data, 2, 4 );
+         */
+      }
    }
 
    /* === Input === */
@@ -39,6 +41,10 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
    input = retroflat_poll_input( &input_evt );
 
    retrocon_input( &(data->con), &input );
+
+   if( RETROCON_FLAG_ACTIVE == (RETROCON_FLAG_ACTIVE & data->con.flags) ) {
+      goto display;
+   }
 
    switch( input ) {
    case RETROFLAT_KEY_RIGHT:
@@ -66,6 +72,8 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
    }
  
    /*  === Drawing === */
+
+display:
 
    retroflat_draw_lock( NULL );
 
@@ -105,6 +113,8 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
          0 );
    }
 
+   retrocon_display( &(data->con), NULL );
+
    retroflat_draw_release( NULL );
 
 cleanup:
@@ -128,6 +138,13 @@ int main( int argc, char* argv[] ) {
 
    maug_mzero( &args, sizeof( struct RETROFLAT_ARGS ) );
 
+   args.screen_w = 320;
+   args.screen_h = 200;
+   args.title = "mbean";
+
+   retval = retroflat_init( argc, argv, &args );
+   maug_cleanup_if_not_ok();
+
    data_h = maug_malloc( 1, sizeof( struct MBEAN_DATA ) );
    maug_cleanup_if_null_alloc( MAUG_MHANDLE, data_h );
 
@@ -142,13 +159,6 @@ int main( int argc, char* argv[] ) {
 
    maug_munlock( data_h, data );
 
-   args.screen_w = 320;
-   args.screen_h = 200;
-   args.title = "mbean";
-
-   retval = retroflat_init( argc, argv, &args );
-   maug_cleanup_if_not_ok();
-
    g_mbean_colors[1] = RETROFLAT_COLOR_GRAY;
    g_mbean_colors[2] = RETROFLAT_COLOR_RED;
    g_mbean_colors[3] = RETROFLAT_COLOR_GREEN;
@@ -162,7 +172,7 @@ cleanup:
 
 #ifndef RETROFLAT_OS_WASM
 
-   if( NULL != data ) {
+   if( NULL != data_h ) {
       maug_mfree( data_h );
    }
 
