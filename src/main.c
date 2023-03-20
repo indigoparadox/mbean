@@ -154,6 +154,9 @@ int main( int argc, char* argv[] ) {
    maug_cleanup_if_null_alloc( MAUG_MHANDLE, data_h );
 
    maug_mlock( data_h, data );
+   maug_cleanup_if_null_alloc( struct MBEAN_DATA*, data );
+
+   maug_mzero( data, sizeof( struct MBEAN_DATA ) );
 
    retval = retrocon_init( &(data->con) );
    maug_cleanup_if_not_ok();
