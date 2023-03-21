@@ -2,13 +2,14 @@
 # vim: ft=make noexpandtab
 
 C_FILES := src/main.c src/mbean.c
+WING=1
 
 include maug/Makefile.inc
 
 # Target-specific options.
 .PHONY: clean
 
-all: mbean.sdl mbean.ale mbeand.exe mbeanw.exe mbean.html mbeanw3.exe
+all: mbean.sdl mbean.ale mbeand.exe mbeannt.exe mbean.html mbeanw3.exe
 
 # Nintendo DS
 
@@ -37,8 +38,6 @@ $(eval $(call TGTDOSALE,mbean))
 $(eval $(call TGTWINICO,mbean))
 
 $(eval $(call TGTWIN386,mbean))
-
-WING=1
 
 $(eval $(call TGTWIN16,mbean))
 
