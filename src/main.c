@@ -172,6 +172,8 @@ int main( int argc, char* argv[] ) {
    g_mbean_colors[3] = RETROFLAT_COLOR_GREEN;
    g_mbean_colors[4] = RETROFLAT_COLOR_BLUE;
 
+   retroflat_message( RETROFLAT_MSG_FLAG_WARNING, "Hello", "Beans" );
+
    /* === Main Loop === */
 
    retroflat_loop( (retroflat_loop_iter)mbean_loop, data_h );
