@@ -2,7 +2,6 @@
 # vim: ft=make noexpandtab
 
 C_FILES := src/main.c src/mbean.c
-WING=1
 
 include maug/Makefile.inc
 
@@ -50,6 +49,10 @@ $(eval $(call TGTWINSDL,mbean))
 # OS/2
 
 $(eval $(call TGTOS2SDL,mbean))
+
+# Mac
+
+$(eval $(call TGTMAC6GCC,mbean))
 
 # Clean
 
