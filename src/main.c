@@ -45,7 +45,7 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
 
    input = retroflat_poll_input( &input_evt );
 
-   retrocon_input( &(data->con), &input );
+   retrocon_input( &(data->con), &input, &input_evt );
 
    if( RETROCON_FLAG_ACTIVE == (RETROCON_FLAG_ACTIVE & data->con.flags) ) {
       goto display;
