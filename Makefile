@@ -1,6 +1,8 @@
 
 # vim: ft=make noexpandtab
 
+VDP=1
+#WING=1
 C_FILES := src/main.c src/mbean.c
 
 include maug/Makefile.inc
