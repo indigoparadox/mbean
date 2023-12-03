@@ -63,8 +63,8 @@ settle_grid:
 
 void mbean_drop( struct MBEAN_DATA* g, int8_t x, int8_t y ) {
    g->drops_sz = 2;
-   g->drops[0] = 1 + rand() % 4;
-   g->drops[1] = 1 + rand() % 4;
+   g->drops[0] = 1 + retroflat_get_rand() % 4;
+   g->drops[1] = 1 + retroflat_get_rand() % 4;
    g->drops_x = x;
    g->drops_y = 0;
    g->drops_rot = 0;
