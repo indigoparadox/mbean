@@ -72,6 +72,7 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
       break;
 
    case RETROFLAT_KEY_ESC:
+      error_printf( "quitting due to keypress..." );
       retroflat_quit( 0 );
       break;
    }
@@ -129,6 +130,7 @@ cleanup:
    }
 
    if( MERROR_OK != retval ) {
+      error_printf( "quitting due to error..." );
       retroflat_quit( retval );
    }
 }
@@ -140,6 +142,8 @@ int main( int argc, char* argv[] ) {
    struct MBEAN_DATA* data = NULL;
 
    /* === Setup === */
+
+   logging_init();
 
    maug_mzero( &args, sizeof( struct RETROFLAT_ARGS ) );
 
@@ -189,6 +193,8 @@ cleanup:
    retroflat_shutdown( retval );
 
 #endif /* !RETROFLAT_OS_WASM */
+
+   logging_shutdown();
 
    return retval;
 }

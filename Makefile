@@ -4,6 +4,7 @@
 VDP=1
 #WING=1
 C_FILES := src/main.c src/mbean.c
+GLOBAL_DEFINES := -DLOG_TO_FILE -DLOG_FILE_NAME=\"out.log\"
 
 include maug/Makefile.inc
 
@@ -33,6 +34,8 @@ $(eval $(call TGTWASMSDL,mbean))
 # DOS
 
 $(eval $(call TGTDOSALE,mbean))
+
+$(eval $(call TGTDOSCGA,mbean))
 
 # Win386
 
