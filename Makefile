@@ -35,7 +35,7 @@ $(eval $(call TGTWASMSDL,mbean))
 
 $(eval $(call TGTDOSALE,mbean))
 
-$(eval $(call TGTDOSCGA,mbean))
+#$(eval $(call TGTDOSCGA,mbean))
 
 # Win386
 
