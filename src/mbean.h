@@ -27,6 +27,8 @@
 
 #define MBEAN_FLAG_INIT_DONE 0x02
 
+#define MBEAN_TILE_PURGE -1
+
 /***
  * grid[X][Y]
  *
@@ -43,7 +45,6 @@ struct MBEAN_DATA {
    uint8_t flags;
    struct RETROCON con;
    int8_t probed[MBEAN_GRID_W][MBEAN_GRID_H];
-   int8_t purge[MBEAN_GRID_W][MBEAN_GRID_H];
    int8_t grid[MBEAN_GRID_W][MBEAN_GRID_H];
    int8_t drops[2];
    size_t drops_sz;

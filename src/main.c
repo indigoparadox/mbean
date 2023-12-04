@@ -97,7 +97,7 @@ display:
    /* Roughly display the bean grid. */
    for( y = 0 ; MBEAN_GRID_H > y ; y++ ) {
       for( x = 0 ; MBEAN_GRID_W > x ; x++ ) {
-         if( data->grid[x][y] ) {
+         if( 0 < data->grid[x][y] ) {
             retroflat_ellipse( NULL, g_mbean_colors[data->grid[x][y]],
                MBEAN_GRID_X_PX + (x * MBEAN_BEAN_W),
                MBEAN_GRID_Y_PX + (y * MBEAN_BEAN_W),

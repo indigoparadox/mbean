@@ -37,7 +37,7 @@ void mbean_iter( struct MBEAN_DATA* g ) {
          /* Draw the current dropping pair according to their rotation. */
          x = g->drops_x + (i * gc_mbean_drop_rot_x[g->drops_rot]);
          y = g->drops_y + (i * gc_mbean_drop_rot_y[g->drops_rot]);
-         if( y >= MBEAN_GRID_H - 1 || g->grid[x][y + 1] ) {
+         if( y >= MBEAN_GRID_H - 1 || 0 < g->grid[x][y + 1] ) {
             /* Place the dropping beans on the grid. */
             mbean_plop_drops( g );
             goto settle_grid;
@@ -167,7 +167,6 @@ void mbean_gc( struct MBEAN_DATA* g ) {
 
    /* Reset probe/purge grids. */
    memset( g->probed, '\0', MBEAN_GRID_W * MBEAN_GRID_H );
-   memset( g->purge, '\0', MBEAN_GRID_W * MBEAN_GRID_H );
 
    for( y = 0 ; MBEAN_GRID_H > y ; y++ ) {
       for( x = 0 ; MBEAN_GRID_W > x ; x++ ) {
@@ -187,16 +186,15 @@ void mbean_gc( struct MBEAN_DATA* g ) {
 
          /* We found enough, so descend and add to purge grid! */
          for( i = 0 ; nodes_sz > i ; i++ ) {
-            g->purge[nodes[i].x][nodes[i].y] = 1;
+            g->grid[nodes[i].x][nodes[i].y] = MBEAN_TILE_PURGE;
          }
       }
    }
 
    for( y = 0 ; MBEAN_GRID_H > y ; y++ ) {
       for( x = 0 ; MBEAN_GRID_W > x ; x++ ) {
-         if( g->purge[x][y] ) {
+         if( MBEAN_TILE_PURGE == g->grid[x][y] ) {
             g->grid[x][y] = 0;
-            g->purge[x][y] = 0;
 
             /* Unsettle grid. */
             g->flags &= !MBEAN_FLAG_SETTLED;
