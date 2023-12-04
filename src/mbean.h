@@ -27,7 +27,12 @@
 
 #define MBEAN_FLAG_INIT_DONE 0x02
 
+/* Flag for data->flags indicating rotate key was hit last frame. */
+#define MBEAN_FLAG_ROT_LAST 0x04
+
 #define MBEAN_TILE_PURGE -1
+
+#define MBEAN_WAIT_SKIP -1
 
 /***
  * grid[X][Y]
@@ -52,7 +57,7 @@ struct MBEAN_DATA {
    int8_t drops_rot;
    int8_t drops_x;
    int8_t drops_y;
-   size_t wait;
+   int16_t wait;
 };
 
 struct MBEAN_GC_NODE {
