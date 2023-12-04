@@ -31,8 +31,11 @@ void mbean_iter( struct MBEAN_DATA* g ) {
    if( g->wait > 0 ) {
       g->wait--;
    } else {
-      /* Do actual drop. */
+
+      debug_printf( 2, "setting wait to %d...", MBEAN_TICK_WAIT );
       g->wait = MBEAN_TICK_WAIT;
+
+      /* Do actual drop. */
       for( i = 0 ; g->drops_sz > i ; i++ ) {
          /* Draw the current dropping pair according to their rotation. */
          x = g->drops_x + (i * gc_mbean_drop_rot_x[g->drops_rot]);
@@ -69,6 +72,8 @@ void mbean_drop( struct MBEAN_DATA* g, int8_t x, int8_t y ) {
    g->drops_x = x;
    g->drops_y = 0;
    g->drops_rot = 0;
+   debug_printf( 2, "setting wait to %d...", MBEAN_TICK_WAIT );
+   g->wait = MBEAN_TICK_WAIT;
 }
 
 void mbean_plop_drops( struct MBEAN_DATA* g ) {

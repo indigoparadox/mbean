@@ -61,13 +61,17 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
       break;
 
    case RETROFLAT_KEY_DOWN:
-      data->wait = 0;
+      debug_printf( 2, "setting wait to %d...", MBEAN_WAIT_SKIP );
+      data->wait = MBEAN_WAIT_SKIP;
       break;
 
    case RETROFLAT_KEY_SPACE:
-      data->drops_rot++;
-      if( 4 <= data->drops_rot ) {
-         data->drops_rot = 0;
+      if( MBEAN_FLAG_ROT_LAST != (MBEAN_FLAG_ROT_LAST & data->flags) ) {
+         data->drops_rot++;
+         if( 4 <= data->drops_rot ) {
+            data->drops_rot = 0;
+         }
+         data->flags |= MBEAN_FLAG_ROT_LAST;
       }
       break;
 
@@ -75,6 +79,12 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
       error_printf( "quitting due to keypress..." );
       retroflat_quit( 0 );
       break;
+   }
+
+   /* Reset rotate flag if rotate not pressed. */
+   if( RETROFLAT_KEY_SPACE != input ) {
+      /* TODO: Have a timer to suppress rotation flag. */
+      data->flags &= ~MBEAN_FLAG_ROT_LAST;
    }
  
    /*  === Drawing === */
@@ -150,6 +160,7 @@ int main( int argc, char* argv[] ) {
    args.screen_w = 320;
    args.screen_h = 200;
    args.title = "mbean";
+   args.flags |= RETROFLAT_FLAGS_KEY_REPEAT;
 
    retval = retroflat_init( argc, argv, &args );
    maug_cleanup_if_not_ok();
