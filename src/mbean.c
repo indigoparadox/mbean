@@ -5,6 +5,20 @@
 #define MBEAN_C
 #include "mbean.h"
 
+static void mbean_erase_bean_drops( struct MBEAN_DATA* g ) {
+   size_t i = 0;
+   int8_t dirty_x = 0;
+   int8_t dirty_y = 0;
+
+   for( i = 0 ; g->drops_sz > i ; i++ ) {
+      dirty_x = g->drops_x + (i * gc_mbean_drop_rot_x[g->drops_rot]);
+      dirty_y = g->drops_y + (i * gc_mbean_drop_rot_y[g->drops_rot]);
+      debug_printf( 3, "marking %d, %d dirty...", dirty_x, dirty_y );
+      assert( 0 == g->grid[dirty_x][dirty_y] );
+      g->grid[dirty_x][dirty_y] = MBEAN_TILE_PURGE;
+   }
+}
+
 void mbean_iter_gravity( struct MBEAN_DATA* g, int8_t bx, int8_t by ) {
 
    /* Never do anything for the bottom row. */
@@ -12,10 +26,11 @@ void mbean_iter_gravity( struct MBEAN_DATA* g, int8_t bx, int8_t by ) {
       return;
    }
 
-   if( g->grid[bx][by] && !g->grid[bx][by + 1] ) {
+   /* If this tile is not empty but the tile below it is, fall! */
+   if( 0 < g->grid[bx][by] && 0 >= g->grid[bx][by + 1] ) {
       /* Move the bean down by one. */
       g->grid[bx][by + 1] = g->grid[bx][by];
-      g->grid[bx][by] = 0;
+      g->grid[bx][by] = MBEAN_TILE_PURGE;
 
       /* A fall happened, so the grid is unsettled. */
       g->flags &= ~MBEAN_FLAG_SETTLED;
@@ -42,10 +57,12 @@ void mbean_iter( struct MBEAN_DATA* g ) {
          y = g->drops_y + (i * gc_mbean_drop_rot_y[g->drops_rot]);
          if( y >= MBEAN_GRID_H - 1 || 0 < g->grid[x][y + 1] ) {
             /* Place the dropping beans on the grid. */
-            mbean_plop_drops( g );
+            mbean_place_drop_tiles( g );
             goto settle_grid;
          }
       }
+
+      mbean_erase_bean_drops( g );
 
       /* Beans still dropping. */
       g->drops_y++;
@@ -76,11 +93,14 @@ void mbean_drop( struct MBEAN_DATA* g, int8_t x, int8_t y ) {
    g->wait = MBEAN_TICK_WAIT;
 }
 
-void mbean_plop_drops( struct MBEAN_DATA* g ) {
+void mbean_place_drop_tiles( struct MBEAN_DATA* g ) {
    size_t i = 0;
    int8_t bx = 0,
       by = 0;
 
+   /* Iterate through the beans in the drop and place them according to the
+    * x/y-offset lookup table indexed by rotation key.
+    */
    for( i = 0 ; g->drops_sz > i ; i++ ) {
       bx = g->drops_x + (i * gc_mbean_drop_rot_x[g->drops_rot]);
       by = g->drops_y + (i * gc_mbean_drop_rot_y[g->drops_rot]);
@@ -90,26 +110,45 @@ void mbean_plop_drops( struct MBEAN_DATA* g ) {
    g->drops_sz = 0;
 }
 
-void mbean_move_drops( struct MBEAN_DATA* g, int8_t x_m ) {
+void mbean_rotate_drops( struct MBEAN_DATA* g ) {
+
+   mbean_erase_bean_drops( g );
+
+   g->drops_rot++;
+   if( 4 <= g->drops_rot ) {
+      g->drops_rot = 0;
+   }
+   g->flags |= MBEAN_FLAG_ROT_LAST;
+
+}
+
+void mbean_move_drops_x( struct MBEAN_DATA* g, int8_t x_move ) {
    int8_t x_sz = gc_mbean_drop_rot_x[g->drops_rot];
 
    x_sz *= g->drops_sz;
+
+   mbean_erase_bean_drops( g );
+
+   /* TODO: Check if tile we're going to move into is occupied! */
 
    /* Check if drops_x + size_t * offset is out of bounds, depending on
     * rotation.
     */
    if( (
-      (0 == g->drops_rot && g->drops_x + x_m + x_sz <= MBEAN_GRID_W) ||
-      (1 == g->drops_rot && g->drops_x + x_m < MBEAN_GRID_W) ||
-      (2 == g->drops_rot && g->drops_x + x_m < MBEAN_GRID_W) ||
-      (3 == g->drops_rot && g->drops_x + x_m < MBEAN_GRID_W)
+      /* Make sure we stay within bean grid on high end. */
+      (0 == g->drops_rot && g->drops_x + x_move + x_sz <= MBEAN_GRID_W) ||
+      (1 == g->drops_rot && g->drops_x + x_move < MBEAN_GRID_W) ||
+      (2 == g->drops_rot && g->drops_x + x_move < MBEAN_GRID_W) ||
+      (3 == g->drops_rot && g->drops_x + x_move < MBEAN_GRID_W)
    ) && (
-      (0 == g->drops_rot && g->drops_x + x_m >= 0) ||
-      (1 == g->drops_rot && g->drops_x + x_m >= 0) ||
-      (2 == g->drops_rot && g->drops_x + x_m + x_sz >= 0) ||
-      (3 == g->drops_rot && g->drops_x + x_m >= 0)
+      /* Make sure we stay within bean grid on low end. */
+      (0 == g->drops_rot && g->drops_x + x_move >= 0) ||
+      (1 == g->drops_rot && g->drops_x + x_move >= 0) ||
+      (2 == g->drops_rot && g->drops_x + x_move + x_sz >= 0) ||
+      (3 == g->drops_rot && g->drops_x + x_move >= 0)
    ) ) {
-      g->drops_x += x_m;
+      /* TODO: Purge previous tiles. */
+      g->drops_x += x_move;
    }
 }
 
@@ -199,7 +238,7 @@ void mbean_gc( struct MBEAN_DATA* g ) {
    for( y = 0 ; MBEAN_GRID_H > y ; y++ ) {
       for( x = 0 ; MBEAN_GRID_W > x ; x++ ) {
          if( MBEAN_TILE_PURGE == g->grid[x][y] ) {
-            g->grid[x][y] = 0;
+            /* g->grid[x][y] = 0; */
 
             /* Unsettle grid. */
             g->flags &= !MBEAN_FLAG_SETTLED;

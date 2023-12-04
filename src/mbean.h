@@ -71,9 +71,11 @@ void mbean_iter( struct MBEAN_DATA* g );
 
 void mbean_drop( struct MBEAN_DATA* g, int8_t x, int8_t y );
 
-void mbean_plop_drops( struct MBEAN_DATA* g );
+void mbean_place_drop_tiles( struct MBEAN_DATA* g );
 
-void mbean_move_drops( struct MBEAN_DATA* g, int8_t x_m );
+void mbean_rotate_drops( struct MBEAN_DATA* g );
+
+void mbean_move_drops_x( struct MBEAN_DATA* g, int8_t x_m );
 
 struct MBEAN_GC_NODE* mbean_gc_probe(
    struct MBEAN_DATA* g, int8_t x, int8_t y,
