@@ -25,6 +25,8 @@
 
 #define MBEAN_FLAG_SETTLED  0x01
 
+#define MBEAN_FLAG_INIT_DONE 0x02
+
 /***
  * grid[X][Y]
  *
@@ -45,6 +47,7 @@ struct MBEAN_DATA {
    int8_t grid[MBEAN_GRID_W][MBEAN_GRID_H];
    int8_t drops[2];
    size_t drops_sz;
+   /* Current dropping bean pair rotation. */
    int8_t drops_rot;
    int8_t drops_x;
    int8_t drops_y;

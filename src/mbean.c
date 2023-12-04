@@ -34,6 +34,7 @@ void mbean_iter( struct MBEAN_DATA* g ) {
       /* Do actual drop. */
       g->wait = MBEAN_TICK_WAIT;
       for( i = 0 ; g->drops_sz > i ; i++ ) {
+         /* Draw the current dropping pair according to their rotation. */
          x = g->drops_x + (i * gc_mbean_drop_rot_x[g->drops_rot]);
          y = g->drops_y + (i * gc_mbean_drop_rot_y[g->drops_rot]);
          if( y >= MBEAN_GRID_H - 1 || g->grid[x][y + 1] ) {
