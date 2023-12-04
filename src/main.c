@@ -53,11 +53,11 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
 
    switch( input ) {
    case RETROFLAT_KEY_RIGHT:
-      mbean_move_drops( data, 1 );
+      mbean_move_drops_x( data, 1 );
       break;
 
    case RETROFLAT_KEY_LEFT:
-      mbean_move_drops( data, -1 );
+      mbean_move_drops_x( data, -1 );
       break;
 
    case RETROFLAT_KEY_DOWN:
@@ -67,11 +67,7 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
 
    case RETROFLAT_KEY_SPACE:
       if( MBEAN_FLAG_ROT_LAST != (MBEAN_FLAG_ROT_LAST & data->flags) ) {
-         data->drops_rot++;
-         if( 4 <= data->drops_rot ) {
-            data->drops_rot = 0;
-         }
-         data->flags |= MBEAN_FLAG_ROT_LAST;
+         mbean_rotate_drops( data );
       }
       break;
 
@@ -93,34 +89,50 @@ display:
 
    retroflat_draw_lock( NULL );
 
+   /*
    retroflat_rect(
       NULL, RETROFLAT_COLOR_BLACK, 0, 0,
       retroflat_screen_w(), retroflat_screen_h(),
       RETROFLAT_FLAGS_FILL );
+   */
 
-   retroflat_rect(
-      NULL, RETROFLAT_COLOR_WHITE, 
-      MBEAN_GRID_X_PX, MBEAN_GRID_Y_PX,
-      MBEAN_GRID_W_PX, MBEAN_GRID_H_PX,
-      0 );
+   if( MBEAN_FLAG_INIT_DONE != (MBEAN_FLAG_INIT_DONE & data->flags) ) {
+      retroflat_rect(
+         NULL, RETROFLAT_COLOR_WHITE, 
+         MBEAN_GRID_X_PX, MBEAN_GRID_Y_PX,
+         MBEAN_GRID_W_PX, MBEAN_GRID_H_PX,
+         0 );
+   }
 
    /* Roughly display the bean grid. */
    for( y = 0 ; MBEAN_GRID_H > y ; y++ ) {
       for( x = 0 ; MBEAN_GRID_W > x ; x++ ) {
          if( 0 < data->grid[x][y] ) {
+            /* Draw colorful bean tiles. */
             retroflat_ellipse( NULL, g_mbean_colors[data->grid[x][y]],
                MBEAN_GRID_X_PX + (x * MBEAN_BEAN_W),
                MBEAN_GRID_Y_PX + (y * MBEAN_BEAN_W),
                MBEAN_BEAN_W,
                MBEAN_BEAN_W,
                0 );
+         } else if( MBEAN_TILE_PURGE == data->grid[x][y] ) {
+            /* Overdraw dirty bean tiles with background. */
+            retroflat_ellipse( NULL, RETROFLAT_COLOR_BLACK,
+               MBEAN_GRID_X_PX + (x * MBEAN_BEAN_W),
+               MBEAN_GRID_Y_PX + (y * MBEAN_BEAN_W),
+               MBEAN_BEAN_W,
+               MBEAN_BEAN_W,
+               0 );
+            data->grid[x][y] = 0;
          }
       }
    }
 
+   /* Draw drops. */
    for( i = 0 ; data->drops_sz > i ; i++ ) {
       x = data->drops_x + (i * gc_mbean_drop_rot_x[data->drops_rot]);
       y = data->drops_y + (i * gc_mbean_drop_rot_y[data->drops_rot]);
+      /* debug_printf( 3, "drop: %d, %d", x, y ); */
       retroflat_ellipse( NULL, g_mbean_colors[data->drops[i]],
          MBEAN_GRID_X_PX + (x * MBEAN_BEAN_W),
          MBEAN_GRID_Y_PX + (y * MBEAN_BEAN_W),
