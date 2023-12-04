@@ -177,6 +177,9 @@ int main( int argc, char* argv[] ) {
    retval = retroflat_init( argc, argv, &args );
    maug_cleanup_if_not_ok();
 
+   debug_printf( 3, "allocating data struct (" SIZE_T_FMT " bytes)...",
+      sizeof( struct MBEAN_DATA ) );
+
    data_h = maug_malloc( 1, sizeof( struct MBEAN_DATA ) );
    maug_cleanup_if_null_alloc( MAUG_MHANDLE, data_h );
 
