@@ -13,7 +13,7 @@ static void mbean_erase_bean_drops( struct MBEAN_DATA* g ) {
    for( i = 0 ; g->drops_sz > i ; i++ ) {
       dirty_x = g->drops_x + (i * gc_mbean_drop_rot_x[g->drops_rot]);
       dirty_y = g->drops_y + (i * gc_mbean_drop_rot_y[g->drops_rot]);
-      debug_printf( 3, "marking %d, %d dirty...", dirty_x, dirty_y );
+      debug_printf( 0, "marking %d, %d dirty...", dirty_x, dirty_y );
       assert( 0 == g->grid[dirty_x][dirty_y] );
       g->grid[dirty_x][dirty_y] = MBEAN_TILE_PURGE;
    }
@@ -47,7 +47,7 @@ void mbean_iter( struct MBEAN_DATA* g ) {
       g->wait--;
    } else {
 
-      debug_printf( 2, "setting wait to %d...", MBEAN_TICK_WAIT );
+      debug_printf( 0, "setting wait to %d...", MBEAN_TICK_WAIT );
       g->wait = MBEAN_TICK_WAIT;
 
       /* Do actual drop. */
@@ -89,7 +89,7 @@ void mbean_drop( struct MBEAN_DATA* g, int8_t x, int8_t y ) {
    g->drops_x = x;
    g->drops_y = 0;
    g->drops_rot = 0;
-   debug_printf( 2, "setting wait to %d...", MBEAN_TICK_WAIT );
+   debug_printf( 0, "setting wait to %d...", MBEAN_TICK_WAIT );
    g->wait = MBEAN_TICK_WAIT;
 }
 

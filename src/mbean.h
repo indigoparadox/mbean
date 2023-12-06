@@ -34,6 +34,10 @@
 
 #define MBEAN_WAIT_SKIP -1
 
+#define MBEAN_SND_CHANNEL 0
+
+#define MBEAN_SND_CYCLES 50
+
 /***
  * grid[X][Y]
  *
@@ -58,6 +62,7 @@ struct MBEAN_DATA {
    int8_t drops_x;
    int8_t drops_y;
    int16_t wait;
+   uint16_t snd_cycles_left;
 };
 
 struct MBEAN_GC_NODE {
