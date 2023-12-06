@@ -203,7 +203,11 @@ int main( int argc, char* argv[] ) {
    maug_cleanup_if_not_ok();
 
    retval = retrosnd_init( &args );
-   maug_cleanup_if_not_ok();
+   if( MERROR_OK != retval ) {
+      retroflat_message( RETROFLAT_MSG_FLAG_WARNING, "Sound Error",
+         "Could not setup sound device!" );
+      retval = MERROR_OK;
+   }
 
    retrosnd_midi_set_voice( MBEAN_SND_CHANNEL, 127 );
    /* retrosnd_midi_set_control( MBEAN_SND_CHANNEL, 7, 127 );
