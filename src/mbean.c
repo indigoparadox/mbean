@@ -42,6 +42,8 @@ void mbean_iter( struct MBEAN_DATA* g ) {
    int8_t y = 0;
    size_t i = 0;
 
+   g->flags &= ~MBEAN_FLAG_PLACED_LAST;
+
    /* Drop the drops first so they can unsettle the grid if they drop. */
    if( g->wait > 0 ) {
       g->wait--;
@@ -106,6 +108,8 @@ void mbean_place_drop_tiles( struct MBEAN_DATA* g ) {
       by = g->drops_y + (i * gc_mbean_drop_rot_y[g->drops_rot]);
       g->grid[bx][by] = g->drops[i];
    }
+
+   g->flags |= MBEAN_FLAG_PLACED_LAST;
 
    g->drops_sz = 0;
 }

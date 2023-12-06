@@ -25,9 +25,28 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
    maug_mlock( data_h, data );
    maug_cleanup_if_null_alloc( struct MBEAN_DATA*, data );
 
+   /* See if we're done playing a sound. */
+   if( 1 == data->snd_cycles_left ) {
+      debug_printf( 2, "finished playing sound" );
+      retrosnd_midi_note_off( MBEAN_SND_CHANNEL, 60, 127 );
+      data->snd_cycles_left--;
+   } else if( 0 < data->snd_cycles_left ) {
+      data->snd_cycles_left--;
+   }
+
    if( RETROCON_FLAG_ACTIVE != (RETROCON_FLAG_ACTIVE & data->con.flags) ) {
       /* Clear the screen and iterate the bean grid. */
       mbean_iter( data );
+
+      /* Play a sound if just dropped and none is currently playing. */
+      if(
+         MBEAN_FLAG_PLACED_LAST == (MBEAN_FLAG_PLACED_LAST & data->flags) &&
+         0 == data->snd_cycles_left
+      ) {
+         debug_printf( 2, "playing sound..." );
+         retrosnd_midi_note_on( MBEAN_SND_CHANNEL, 60, 127 );
+         data->snd_cycles_left = MBEAN_SND_CYCLES;
+      }
 
       /* Drop a bean set if we can. */
       if( (MBEAN_FLAG_SETTLED & data->flags) && 0 == data->drops_sz ) {
@@ -64,7 +83,7 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
       break;
 
    case RETROFLAT_KEY_DOWN:
-      debug_printf( 2, "setting wait to %d...", MBEAN_WAIT_SKIP );
+      debug_printf( 0, "setting wait to %d...", MBEAN_WAIT_SKIP );
       data->wait = MBEAN_WAIT_SKIP;
       break;
 
@@ -148,8 +167,6 @@ display:
 
    retroflat_draw_release( NULL );
 
-   retrosnd_midi_note_on();
-
 cleanup:
 
    if( NULL != data ) {
@@ -184,6 +201,10 @@ int main( int argc, char* argv[] ) {
 
    retval = retrosnd_init( &args );
    maug_cleanup_if_not_ok();
+
+   retrosnd_midi_set_voice( MBEAN_SND_CHANNEL, 127 );
+   /* retrosnd_midi_set_control( MBEAN_SND_CHANNEL, 7, 127 );
+   retrosnd_midi_set_control( MBEAN_SND_CHANNEL, 39, 0x3fff ); */
 
    debug_printf( 3, "allocating data struct (" SIZE_T_FMT " bytes)...",
       sizeof( struct MBEAN_DATA ) );

@@ -30,13 +30,16 @@
 /* Flag for data->flags indicating rotate key was hit last frame. */
 #define MBEAN_FLAG_ROT_LAST 0x04
 
+/* Flag for data->flags indicating a drop was just placed last iter. */
+#define MBEAN_FLAG_PLACED_LAST 0x05
+
 #define MBEAN_TILE_PURGE -1
 
 #define MBEAN_WAIT_SKIP -1
 
 #define MBEAN_SND_CHANNEL 0
 
-#define MBEAN_SND_CYCLES 50
+#define MBEAN_SND_CYCLES 10
 
 /***
  * grid[X][Y]
