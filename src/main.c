@@ -8,6 +8,9 @@
 #define RETROCON_C
 #include <retrocon.h>
 
+#define RETROSND_C
+#include <retrosnd.h>
+
 #include "mbean.h"
 
 void mbean_loop( MAUG_MHANDLE data_h ) {
@@ -145,6 +148,8 @@ display:
 
    retroflat_draw_release( NULL );
 
+   retrosnd_midi_note_on();
+
 cleanup:
 
    if( NULL != data ) {
@@ -175,6 +180,9 @@ int main( int argc, char* argv[] ) {
    args.flags |= RETROFLAT_FLAGS_KEY_REPEAT;
 
    retval = retroflat_init( argc, argv, &args );
+   maug_cleanup_if_not_ok();
+
+   retval = retrosnd_init( &args );
    maug_cleanup_if_not_ok();
 
    debug_printf( 3, "allocating data struct (" SIZE_T_FMT " bytes)...",
@@ -209,6 +217,8 @@ int main( int argc, char* argv[] ) {
    retroflat_loop( (retroflat_loop_iter)mbean_loop, data_h );
 
 cleanup:
+
+   retrosnd_shutdown();
 
 #ifndef RETROFLAT_OS_WASM
 
