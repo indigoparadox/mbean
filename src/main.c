@@ -191,13 +191,8 @@ int main( int argc, char* argv[] ) {
 
    maug_mzero( &args, sizeof( struct RETROFLAT_ARGS ) );
 
-   args.screen_w = 320;
-   args.screen_h = 200;
    args.title = "mbean";
    args.flags |= RETROFLAT_FLAGS_KEY_REPEAT;
-#ifdef RETROSND_API_ALSA
-   args.snd_io_base = retrosnd_set_alsa_seq( 128, 0 );
-#endif /* RETROSND_API_ALSA */
 
    retval = retroflat_init( argc, argv, &args );
    maug_cleanup_if_not_ok();
