@@ -124,6 +124,8 @@ display:
          MBEAN_GRID_X_PX, MBEAN_GRID_Y_PX,
          MBEAN_GRID_W_PX, MBEAN_GRID_H_PX,
          0 );
+
+      data->flags |= MBEAN_FLAG_INIT_DONE;
    }
 
    /* Roughly display the bean grid. */
