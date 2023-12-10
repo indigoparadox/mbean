@@ -111,14 +111,14 @@ display:
 
    retroflat_draw_lock( NULL );
 
-   /*
-   retroflat_rect(
-      NULL, RETROFLAT_COLOR_BLACK, 0, 0,
-      retroflat_screen_w(), retroflat_screen_h(),
-      RETROFLAT_FLAGS_FILL );
-   */
-
    if( MBEAN_FLAG_INIT_DONE != (MBEAN_FLAG_INIT_DONE & data->flags) ) {
+      /* Black out background (Windows and some platforms don't zero). */
+      retroflat_rect(
+         NULL, RETROFLAT_COLOR_BLACK, 0, 0,
+         retroflat_screen_w(), retroflat_screen_h(),
+         RETROFLAT_FLAGS_FILL );
+      
+      /* Draw rectangle border. */
       retroflat_rect(
          NULL, RETROFLAT_COLOR_WHITE, 
          MBEAN_GRID_X_PX, MBEAN_GRID_Y_PX,
