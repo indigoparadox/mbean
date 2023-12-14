@@ -50,6 +50,8 @@ $(eval $(call TGTWINNT,mbean))
 
 $(eval $(call TGTWINSDL,mbean))
 
+$(eval $(call TGT_GCC64_WIN_WIN32,mbean))
+
 # OS/2
 
 $(eval $(call TGTOS2SDL,mbean))
