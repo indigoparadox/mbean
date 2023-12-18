@@ -246,9 +246,9 @@ int main( int argc, char* argv[] ) {
 
 cleanup:
 
-   retrosnd_shutdown();
-
 #ifndef RETROFLAT_OS_WASM
+
+   retrosnd_shutdown();
 
    if( NULL != data_h ) {
       maug_mfree( data_h );
@@ -256,9 +256,9 @@ cleanup:
 
    retroflat_shutdown( retval );
 
-#endif /* !RETROFLAT_OS_WASM */
-
    logging_shutdown();
+
+#endif /* !RETROFLAT_OS_WASM */
 
    return retval;
 }
