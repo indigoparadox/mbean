@@ -242,7 +242,7 @@ int main( int argc, char* argv[] ) {
 
    /* === Main Loop === */
 
-   retroflat_loop( (retroflat_loop_iter)mbean_loop, data_h );
+   retroflat_loop( (retroflat_loop_iter)mbean_loop, NULL, data_h );
 
 cleanup:
 

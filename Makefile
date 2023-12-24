@@ -10,7 +10,7 @@ include maug/Makefile.inc
 # Target-specific options.
 .PHONY: clean
 
-all: mbean.sdl mbean.ale mbeand.exe mbeannt.exe mbean.html mbeanw3.exe mbeanb.exe
+all: mbean.sdl mbean.ale mbeand.exe mbeannt.exe mbean.html mbeanw3.exe mbeanb.exe mbean64.exe
 
 # Nintendo DS
 
