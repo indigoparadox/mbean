@@ -27,7 +27,8 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
 
    /* See if we're done playing a sound. */
    if( 1 == data->snd_cycles_left ) {
-      debug_printf( 2, "%u: finished playing sound", retroflat_get_ms() );
+      debug_printf( 2, RETROFLAT_MS_FMT ": finished playing sound",
+         retroflat_get_ms() );
       retrosnd_midi_note_off( MBEAN_SND_CHANNEL, 60, 127 );
       data->snd_cycles_left--;
    } else if( 0 < data->snd_cycles_left ) {
@@ -43,17 +44,20 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
          MBEAN_FLAG_PLACED_LAST == (MBEAN_FLAG_PLACED_LAST & data->flags) &&
          0 == data->snd_cycles_left
       ) {
-         debug_printf( 2, "%u: playing sound...", retroflat_get_ms() );
+         debug_printf( 2, RETROFLAT_MS_FMT ": playing sound...",
+            retroflat_get_ms() );
          retrosnd_midi_note_on( MBEAN_SND_CHANNEL, 60, 127 );
          data->snd_cycles_left = MBEAN_SND_CYCLES;
       }
 
       /* Drop a bean set if we can. */
       if( (MBEAN_FLAG_SETTLED & data->flags) && 0 == data->drops_sz ) {
-         debug_printf( 1, "%u: attempting gc...", retroflat_get_ms() );
+         debug_printf( 1, RETROFLAT_MS_FMT ": attempting gc...",
+            retroflat_get_ms() );
          mbean_gc( data );
          if( (MBEAN_FLAG_SETTLED & data->flags) && 0 == data->drops_sz ) {
-            debug_printf( 1, "%u: dropping...", retroflat_get_ms() );
+            debug_printf( 1, RETROFLAT_MS_FMT ": dropping...",
+               retroflat_get_ms() );
             mbean_drop( data, 3, 0 );
          }
          /*
@@ -83,8 +87,8 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
       break;
 
    case RETROFLAT_KEY_DOWN:
-      debug_printf( 0, "%u: setting wait to %d...", MBEAN_WAIT_SKIP,
-         retroflat_get_ms() );
+      debug_printf( 0, RETROFLAT_MS_FMT ": setting wait to %d...",
+         retroflat_get_ms(), MBEAN_WAIT_SKIP );
       data->wait = MBEAN_WAIT_SKIP;
       break;
 
@@ -213,7 +217,8 @@ int main( int argc, char* argv[] ) {
    /* retrosnd_midi_set_control( MBEAN_SND_CHANNEL, 7, 127 );
    retrosnd_midi_set_control( MBEAN_SND_CHANNEL, 39, 0x3fff ); */
 
-   debug_printf( 3, "%u: allocating data struct (" SIZE_T_FMT " bytes)...",
+   debug_printf( 3, RETROFLAT_MS_FMT ": allocating data struct ("
+      SIZE_T_FMT " bytes)...",
       retroflat_get_ms(), sizeof( struct MBEAN_DATA ) );
 
    data_h = maug_malloc( 1, sizeof( struct MBEAN_DATA ) );
