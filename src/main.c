@@ -19,7 +19,7 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
    size_t x = 0,
       y = 0,
       i = 0;
-   int input = 0;
+   RETROFLAT_IN_KEY input = 0;
    struct RETROFLAT_INPUT input_evt;
 
    maug_mlock( data_h, data );
