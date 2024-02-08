@@ -4,6 +4,8 @@
 VDP=1
 #WING=1
 C_FILES := src/main.c src/mbean.c
+#RETROFLAT_DOS_MEM_LARGE=1
+#GLOBAL_DEFINES := -DRETROSND_TRACE_LVL
 
 include maug/Makefile.inc
 

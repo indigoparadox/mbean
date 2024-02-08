@@ -41,7 +41,8 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
 
       /* Play a sound if just dropped and none is currently playing. */
       if(
-         MBEAN_FLAG_PLACED_LAST == (MBEAN_FLAG_PLACED_LAST & data->flags) &&
+         MBEAN_FLAG_PLACED_LAST ==
+            (MBEAN_FLAG_PLACED_LAST & data->flags) &&
          0 == data->snd_cycles_left
       ) {
          debug_printf( 2, RETROFLAT_MS_FMT ": playing sound...",
@@ -213,7 +214,10 @@ int main( int argc, char* argv[] ) {
       goto cleanup;
    }
 
-   retrosnd_midi_set_voice( MBEAN_SND_CHANNEL, 127 );
+#ifdef RETROSND_API_PC_BIOS
+   retrosnd_set_sf_bank( "dmx_dmx.op2" );
+#endif /* RETROSND_API_PC_BIOS */
+   retrosnd_midi_set_voice( MBEAN_SND_CHANNEL, 0 );
    /* retrosnd_midi_set_control( MBEAN_SND_CHANNEL, 7, 127 );
    retrosnd_midi_set_control( MBEAN_SND_CHANNEL, 39, 0x3fff ); */
 
