@@ -31,7 +31,7 @@
 #define MBEAN_FLAG_ROT_LAST 0x04
 
 /* Flag for data->flags indicating a drop was just placed last iter. */
-#define MBEAN_FLAG_PLACED_LAST 0x05
+#define MBEAN_FLAG_PLACED_LAST 0x08
 
 #define MBEAN_TILE_PURGE -1
 
@@ -39,7 +39,7 @@
 
 #define MBEAN_SND_CHANNEL 0
 
-#define MBEAN_SND_CYCLES 10
+#define MBEAN_SND_CYCLES 1
 
 /***
  * grid[X][Y]

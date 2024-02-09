@@ -35,38 +35,51 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
       data->snd_cycles_left--;
    }
 
-   if( RETROCON_FLAG_ACTIVE != (RETROCON_FLAG_ACTIVE & data->con.flags) ) {
-      /* Clear the screen and iterate the bean grid. */
-      mbean_iter( data );
+   if( RETROCON_FLAG_ACTIVE == (RETROCON_FLAG_ACTIVE & data->con.flags) ) {
+      /* Skip bean logic. */
+      goto check_input;
+   }
 
-      /* Play a sound if just dropped and none is currently playing. */
-      if(
-         MBEAN_FLAG_PLACED_LAST ==
-            (MBEAN_FLAG_PLACED_LAST & data->flags) &&
-         0 == data->snd_cycles_left
-      ) {
+   /* Clear the screen and iterate the bean grid. */
+   mbean_iter( data );
+
+   /* Drop a bean set if we can. */
+   if(
+      MBEAN_FLAG_SETTLED == (MBEAN_FLAG_SETTLED & data->flags) &&
+      0 == data->drops_sz
+   ) {
+
+      retroflat_string(
+         NULL, RETROFLAT_COLOR_RED,
+         "Bam!", 0, NULL, 10, 10, 0 );
+   
+      if( 0 == data->snd_cycles_left ) {
          debug_printf( 2, RETROFLAT_MS_FMT ": playing sound...",
             retroflat_get_ms() );
          retrosnd_midi_note_on( MBEAN_SND_CHANNEL, 60, 127 );
          data->snd_cycles_left = MBEAN_SND_CYCLES;
       }
 
-      /* Drop a bean set if we can. */
+      debug_printf( 1, RETROFLAT_MS_FMT ": attempting gc...",
+         retroflat_get_ms() );
+      mbean_gc( data );
       if( (MBEAN_FLAG_SETTLED & data->flags) && 0 == data->drops_sz ) {
-         debug_printf( 1, RETROFLAT_MS_FMT ": attempting gc...",
+         debug_printf( 1, RETROFLAT_MS_FMT ": dropping...",
             retroflat_get_ms() );
-         mbean_gc( data );
-         if( (MBEAN_FLAG_SETTLED & data->flags) && 0 == data->drops_sz ) {
-            debug_printf( 1, RETROFLAT_MS_FMT ": dropping...",
-               retroflat_get_ms() );
-            mbean_drop( data, 3, 0 );
-         }
-         /*
-         mbean_drop( data, 1, 3 );
-         mbean_drop( data, 2, 4 );
-         */
+         mbean_drop( data, 3, 0 );
       }
+      /*
+      mbean_drop( data, 1, 3 );
+      mbean_drop( data, 2, 4 );
+      */
+   } else {
+      retroflat_rect(
+         NULL, RETROFLAT_COLOR_BLACK, 10, 10,
+         40, 20,
+         RETROFLAT_FLAGS_FILL );
    }
+
+check_input:
 
    /* === Input === */
 
