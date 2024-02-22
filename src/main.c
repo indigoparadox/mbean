@@ -2,8 +2,8 @@
 #define MAUG_C
 #include <maug.h>
 
-#define RETROFLT_C
-#include <retroflt.h>
+#define RETROFNT_C
+#include <retrofnt.h>
 
 #define RETROCON_C
 #include <retrocon.h>
@@ -21,9 +21,12 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
       i = 0;
    RETROFLAT_IN_KEY input = 0;
    struct RETROFLAT_INPUT input_evt;
+   struct RETROFONT* font = NULL;
 
    maug_mlock( data_h, data );
    maug_cleanup_if_null_alloc( struct MBEAN_DATA*, data );
+   maug_mlock( data->font_h, font );
+   maug_cleanup_if_null_alloc( struct RETROFONT*, font );
 
    /* See if we're done playing a sound. */
    if( 1 == data->snd_cycles_left ) {
@@ -49,9 +52,9 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
       0 == data->drops_sz
    ) {
 
-      retroflat_string(
+      retrofont_string(
          NULL, RETROFLAT_COLOR_RED,
-         "Bam!", 0, NULL, 10, 10, 0 );
+         "Bam!", 0, font, 10, 10, 0 );
    
       if( 0 == data->snd_cycles_left ) {
          debug_printf( 2, RETROFLAT_MS_FMT ": playing sound...",
@@ -191,6 +194,9 @@ display:
 cleanup:
 
    if( NULL != data ) {
+      if( NULL != font ) {
+         maug_munlock( data->font_h, font );
+      }
       maug_munlock( data_h, data );
    }
 
@@ -200,11 +206,23 @@ cleanup:
    }
 }
 
+void dump_palette() {
+   size_t i = 0;
+   uint32_t rgb = 0;
+
+   for( i = 0 ; 16 > i ; i++ ) {
+      retroflat_get_palette( i, &rgb );
+      debug_printf( 3, "color " SIZE_T_FMT ": " UPRINTF_X32_FMT,
+         i, rgb );
+   }
+}
+
 int main( int argc, char* argv[] ) {
    int retval = 0;
    MAUG_MHANDLE data_h = NULL;
    struct RETROFLAT_ARGS args;
    struct MBEAN_DATA* data = NULL;
+
 
    /* === Setup === */
 
@@ -246,6 +264,11 @@ int main( int argc, char* argv[] ) {
 
    maug_mzero( data, sizeof( struct MBEAN_DATA ) );
 
+   retval = retrofont_load( "unscii-8.hex", &(data->font_h), 8, 33, 93 );
+   maug_cleanup_if_not_ok();
+
+   assert( NULL != data->font_h );
+
    retval = retrocon_init( &(data->con) );
    maug_cleanup_if_not_ok();
 
@@ -260,6 +283,13 @@ int main( int argc, char* argv[] ) {
    g_mbean_colors[3] = RETROFLAT_COLOR_GREEN;
    g_mbean_colors[4] = RETROFLAT_COLOR_BLUE;
 
+   dump_palette();
+
+   retroflat_set_palette( 1, 0xffffffff );
+   retroflat_set_palette( 2, 0xffffffff );
+   retroflat_set_palette( 3, 0xffffffff );
+   retroflat_set_palette( 4, 0xffffffff );
+
    retroflat_message( RETROFLAT_MSG_FLAG_WARNING, "Hello", "Beans" );
 
    /* === Main Loop === */
@@ -273,6 +303,9 @@ cleanup:
    retrosnd_shutdown();
 
    if( NULL != data_h ) {
+      maug_mlock( data_h, data );
+      maug_mfree( data->font_h );
+      maug_munlock( data_h, data );
       maug_mfree( data_h );
    }
 

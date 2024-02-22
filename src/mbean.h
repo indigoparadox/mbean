@@ -66,6 +66,7 @@ struct MBEAN_DATA {
    int8_t drops_y;
    int16_t wait;
    uint16_t snd_cycles_left;
+   MAUG_MHANDLE font_h;
 };
 
 struct MBEAN_GC_NODE {
