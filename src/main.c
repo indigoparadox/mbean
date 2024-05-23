@@ -54,7 +54,7 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
 
       retrofont_string(
          NULL, RETROFLAT_COLOR_RED,
-         "Bam!", 0, font, 10, 10, 0 );
+         "Bam!", 0, font, 10, 10, 0, 0, 0 );
    
       if( 0 == data->snd_cycles_left ) {
          debug_printf( 2, RETROFLAT_MS_FMT ": playing sound...",
