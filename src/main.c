@@ -21,12 +21,9 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
       i = 0;
    RETROFLAT_IN_KEY input = 0;
    struct RETROFLAT_INPUT input_evt;
-   struct RETROFONT* font = NULL;
 
    maug_mlock( data_h, data );
    maug_cleanup_if_null_alloc( struct MBEAN_DATA*, data );
-   maug_mlock( data->font_h, font );
-   maug_cleanup_if_null_alloc( struct RETROFONT*, font );
 
    /* See if we're done playing a sound. */
    if( 1 == data->snd_cycles_left ) {
@@ -54,7 +51,7 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
 
       retrofont_string(
          NULL, RETROFLAT_COLOR_RED,
-         "Bam!", 0, font, 10, 10, 0, 0, 0 );
+         "Bam!", 0, data->font_h, 10, 10, 0, 0, 0 );
    
       if( 0 == data->snd_cycles_left ) {
          debug_printf( 2, RETROFLAT_MS_FMT ": playing sound...",
@@ -194,9 +191,6 @@ display:
 cleanup:
 
    if( NULL != data ) {
-      if( NULL != font ) {
-         maug_munlock( data->font_h, font );
-      }
       maug_munlock( data_h, data );
    }
 
@@ -264,12 +258,22 @@ int main( int argc, char* argv[] ) {
 
    maug_mzero( data, sizeof( struct MBEAN_DATA ) );
 
+#ifndef RETROFLAT_OS_WASM
+   /* TODO: Font support under WASM! */
    retval = retrofont_load( "unscii-8.hex", &(data->font_h), 8, 33, 93 );
+   if( MERROR_OK != retval ) {
+      retroflat_message(
+         RETROFLAT_MSG_FLAG_ERROR, "Error", "Could not load font!" );
+   }
+   retval = MERROR_OK; /* XXX */
    maug_cleanup_if_not_ok();
-
-   assert( NULL != data->font_h );
+#endif /* !RETROFLAT_OS_WASM */
 
    retval = retrocon_init( &(data->con) );
+   if( MERROR_OK != retval ) {
+      retroflat_message(
+         RETROFLAT_MSG_FLAG_ERROR, "Error", "Could not initialize console!" );
+   }
    maug_cleanup_if_not_ok();
 
    data->con.lbuffer_color = RETROFLAT_COLOR_WHITE;
@@ -290,7 +294,7 @@ int main( int argc, char* argv[] ) {
    retroflat_set_palette( 3, 0xffffffff );
    retroflat_set_palette( 4, 0xffffffff );
 
-   retroflat_message( RETROFLAT_MSG_FLAG_WARNING, "Hello", "Beans" );
+   /* retroflat_message( RETROFLAT_MSG_FLAG_WARNING, "Hello", "Beans" ); */
 
    /* === Main Loop === */
 

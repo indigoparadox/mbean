@@ -1,7 +1,8 @@
 
 # vim: ft=make noexpandtab
 
-VDP=1
+#VDP=1
+#WASM_SDL_VER=1
 #WING=1
 C_FILES := src/main.c src/mbean.c
 RETROFLAT_DOS_MEM_LARGE=1
@@ -17,7 +18,7 @@ all: mbean.sdl mbean.ale mbeand.exe mbeannt.exe mbean.html mbeanw3.exe mbeanb.ex
 
 # Nintendo DS
 
-#$(eval $(call TGTNDSLIBN,mbean,mbean.bmp))
+$(eval $(call TGTNDSLIBN,mbean,mbean.bmp))
 
 # Unix Allegro
 

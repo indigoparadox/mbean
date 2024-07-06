@@ -15,6 +15,7 @@ static void mbean_erase_bean_drops( struct MBEAN_DATA* g ) {
       dirty_y = g->drops_y + (i * gc_mbean_drop_rot_y[g->drops_rot]);
       debug_printf( 0, "marking %d, %d (%d) dirty...",
          dirty_x, dirty_y, g->grid[dirty_x][dirty_y] );
+      /* TODO: We hit this? Check collision on rotate maybe? */
       assert(
          0 == g->grid[dirty_x][dirty_y] ||
          MBEAN_TILE_PURGE == g->grid[dirty_y][dirty_y] );
