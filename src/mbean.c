@@ -248,6 +248,8 @@ void mbean_gc( struct MBEAN_DATA* g ) {
          if( MBEAN_TILE_PURGE == g->grid[x][y] ) {
             /* g->grid[x][y] = 0; */
 
+            g->score += 10;
+
             /* Unsettle grid. */
             g->flags &= !MBEAN_FLAG_SETTLED;
          }

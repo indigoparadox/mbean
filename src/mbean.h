@@ -64,6 +64,7 @@ struct MBEAN_DATA {
    int8_t drops_rot;
    int8_t drops_x;
    int8_t drops_y;
+   int16_t score;
    int16_t wait;
    uint16_t snd_cycles_left;
    MAUG_MHANDLE font_h;

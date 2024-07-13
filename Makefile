@@ -8,6 +8,7 @@ C_FILES := src/main.c src/mbean.c
 RETROFLAT_DOS_MEM_LARGE=1
 #GLOBAL_DEFINES := -DRETROSND_TRACE_LVL
 GLOBAL_DEFINES := -DRETROFLAT_NO_RETROTILE -DMAUG_NO_MHTML -DRETROFLAT_NO_RETROGXC -DMAUG_NO_MPLUG -DRETROFLAT_NO_RETROGUI -DMAUG_NO_MJSON
+#GLOBAL_DEFINES += -DRETROFONT_TRACE_LVL=1
 
 include maug/Makefile.inc
 
@@ -15,6 +16,8 @@ include maug/Makefile.inc
 .PHONY: clean
 
 all: mbean.sdl mbean.ale mbeand.exe mbeannt.exe mbean.html mbeanw3.exe mbeanb.exe mbean64.exe
+
+$(eval $(call MVFS,unscii-8.hex))
 
 # Nintendo DS
 

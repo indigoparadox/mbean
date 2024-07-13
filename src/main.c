@@ -13,6 +13,8 @@
 
 #include "mbean.h"
 
+#define MBEAN_SCORE_STR_SZ_MAX 10
+
 void mbean_loop( MAUG_MHANDLE data_h ) {
    struct MBEAN_DATA* data = NULL;
    MERROR_RETVAL retval = MERROR_OK;
@@ -21,6 +23,7 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
       i = 0;
    RETROFLAT_IN_KEY input = 0;
    struct RETROFLAT_INPUT input_evt;
+   char score_str[MBEAN_SCORE_STR_SZ_MAX + 1] = { 0 };
 
    maug_mlock( data_h, data );
    maug_cleanup_if_null_alloc( struct MBEAN_DATA*, data );
@@ -48,11 +51,6 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
       MBEAN_FLAG_SETTLED == (MBEAN_FLAG_SETTLED & data->flags) &&
       0 == data->drops_sz
    ) {
-
-      retrofont_string(
-         NULL, RETROFLAT_COLOR_RED,
-         "Bam!", 0, data->font_h, 10, 10, 0, 0, 0 );
-   
       if( 0 == data->snd_cycles_left ) {
          debug_printf( 2, RETROFLAT_MS_FMT ": playing sound...",
             retroflat_get_ms() );
@@ -184,6 +182,11 @@ display:
          0 );
    }
 
+   maug_snprintf( score_str, MBEAN_SCORE_STR_SZ_MAX,
+      "%d", data->score );
+   retrofont_string(
+      NULL, RETROFLAT_COLOR_RED, score_str, 0, data->font_h, 10, 10, 0, 0, 0 );
+
    retrocon_display( &(data->con), NULL );
 
    retroflat_draw_release( NULL );
@@ -258,7 +261,6 @@ int main( int argc, char* argv[] ) {
 
    maug_mzero( data, sizeof( struct MBEAN_DATA ) );
 
-#ifndef RETROFLAT_OS_WASM
    /* TODO: Font support under WASM! */
    retval = retrofont_load( "unscii-8.hex", &(data->font_h), 8, 33, 93 );
    if( MERROR_OK != retval ) {
@@ -267,7 +269,6 @@ int main( int argc, char* argv[] ) {
    }
    retval = MERROR_OK; /* XXX */
    maug_cleanup_if_not_ok();
-#endif /* !RETROFLAT_OS_WASM */
 
    retval = retrocon_init( &(data->con) );
    if( MERROR_OK != retval ) {
@@ -287,12 +288,14 @@ int main( int argc, char* argv[] ) {
    g_mbean_colors[3] = RETROFLAT_COLOR_GREEN;
    g_mbean_colors[4] = RETROFLAT_COLOR_BLUE;
 
+   /*
    dump_palette();
 
    retroflat_set_palette( 1, 0xffffffff );
    retroflat_set_palette( 2, 0xffffffff );
    retroflat_set_palette( 3, 0xffffffff );
    retroflat_set_palette( 4, 0xffffffff );
+   */
 
    /* retroflat_message( RETROFLAT_MSG_FLAG_WARNING, "Hello", "Beans" ); */
 
