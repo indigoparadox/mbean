@@ -1,15 +1,5 @@
 
 #define MAUG_C
-#include <maug.h>
-
-#define RETROFNT_C
-#include <retrofnt.h>
-
-#define RETROCON_C
-#include <retrocon.h>
-
-#define RETROSND_C
-#include <retrosnd.h>
 
 #include "mbean.h"
 
@@ -24,6 +14,7 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
    RETROFLAT_IN_KEY input = 0;
    struct RETROFLAT_INPUT input_evt;
    char score_str[MBEAN_SCORE_STR_SZ_MAX + 1] = { 0 };
+   retrogui_idc_t idc_con = RETROGUI_IDC_NONE;
 
    maug_mlock( data_h, data );
    maug_cleanup_if_null_alloc( struct MBEAN_DATA*, data );
@@ -83,7 +74,11 @@ check_input:
 
    input = retroflat_poll_input( &input_evt );
 
-   retrocon_input( &(data->con), &input, &input_evt );
+   retrocon_input( &(data->con), &input, &input_evt, &idc_con, NULL, 0 );
+   if( RETROCON_IDC_CLOSE == idc_con ) {
+      /* Redraw the screen. */
+      data->flags &= ~MBEAN_FLAG_INIT_DONE;
+   }
 
    if( RETROCON_FLAG_ACTIVE == (RETROCON_FLAG_ACTIVE & data->con.flags) ) {
       goto display;
@@ -270,12 +265,10 @@ int main( int argc, char* argv[] ) {
    retval = MERROR_OK; /* XXX */
    maug_cleanup_if_not_ok();
 
-   retval = retrocon_init( &(data->con) );
-   if( MERROR_OK != retval ) {
-      retroflat_message(
-         RETROFLAT_MSG_FLAG_ERROR, "Error", "Could not initialize console!" );
-   }
-   maug_cleanup_if_not_ok();
+   retrocon_init( &(data->con), "unscii-8.hex",
+      (retroflat_screen_w() >> 1) - 100,
+      (retroflat_screen_h() >> 1) - 50,
+      200, 100 );
 
    data->con.lbuffer_color = RETROFLAT_COLOR_WHITE;
    data->con.sbuffer_color = RETROFLAT_COLOR_GRAY;
@@ -306,6 +299,10 @@ int main( int argc, char* argv[] ) {
 cleanup:
 
 #ifndef RETROFLAT_OS_WASM
+
+   maug_mlock( data_h, data );
+   retrocon_shutdown( &(data->con) );
+   maug_munlock( data_h, data );
 
    retrosnd_shutdown();
 

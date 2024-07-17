@@ -2,6 +2,12 @@
 #ifndef MBEAN_H
 #define MBEAN_H
 
+#include <maug.h>
+#include <retrofnt.h>
+#include <retrogui.h>
+#include <retrocon.h>
+#include <retrosnd.h>
+
 #ifndef MBEAN_BEAN_W
 #  define MBEAN_BEAN_W 8
 #endif /* !MBEAN_BEAN_W */
