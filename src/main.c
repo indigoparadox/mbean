@@ -74,7 +74,7 @@ check_input:
 
    input = retroflat_poll_input( &input_evt );
 
-   retrocon_input( &(data->con), &input, &input_evt, &idc_con, NULL, 0 );
+   retrocon_input( &(data->con), &input, &input_evt, &idc_con, NULL );
    if( RETROCON_IDC_CLOSE == idc_con ) {
       /* Redraw the screen. */
       data->flags &= ~MBEAN_FLAG_INIT_DONE;
