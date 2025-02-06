@@ -300,9 +300,11 @@ cleanup:
 
 #ifndef RETROFLAT_OS_WASM
 
-   maug_mlock( data_h, data );
-   retrocon_shutdown( &(data->con) );
-   maug_munlock( data_h, data );
+   if( NULL != data_h ) {
+      maug_mlock( data_h, data );
+      retrocon_shutdown( &(data->con) );
+      maug_munlock( data_h, data );
+   }
 
    retrosnd_shutdown();
 
