@@ -238,7 +238,7 @@ int main( int argc, char* argv[] ) {
    }
 
 #ifdef RETROSND_API_PC_BIOS
-   retrosnd_set_sf_bank( "dmx_dmx.op2" );
+   retrosnd_midi_set_sf_bank( "dmx_dmx.op2" );
 #endif /* RETROSND_API_PC_BIOS */
    retrosnd_midi_set_voice( MBEAN_SND_CHANNEL, 0 );
    /* retrosnd_midi_set_control( MBEAN_SND_CHANNEL, 7, 127 );
