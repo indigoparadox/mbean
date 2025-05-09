@@ -17,7 +17,7 @@ include maug/Makefile.inc
 # Target-specific options.
 .PHONY: clean
 
-all: mbean.sdl mbean.ale mbeand.exe mbeannt.exe mbean.html mbeanw3.exe mbeanb.exe mbean64.exe
+all: mbean.sdl mbean.ale mbeanb.exe mbeannt.exe mbean.html mbeanw.exe mbeanb.exe mbean64.exe
 
 $(eval $(call MVFS,unscii-8.hex))
 
