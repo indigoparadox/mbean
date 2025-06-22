@@ -4,6 +4,7 @@
 #VDP=1
 #WASM_SDL_VER=1
 #WING=1
+RETROFLAT_SOUND=1
 C_FILES := src/main.c src/mbean.c
 RETROFLAT_DOS_MEM_LARGE=1
 #GLOBAL_DEFINES := -DRETROSND_TRACE_LVL
@@ -20,6 +21,10 @@ include maug/Makefile.inc
 all: mbean.sdl mbean.ale mbeanb.exe mbeannt.exe mbean.html mbeanw.exe mbeanb.exe mbean64.exe
 
 $(eval $(call MVFS,unscii-8.hex))
+
+# PalmOS
+
+$(eval $(call TGTPALM,mbean))
 
 # Nintendo DS
 
@@ -71,7 +76,7 @@ $(eval $(call TGTOS2SDL,mbean))
 
 # Mac
 
-$(eval $(call TGTMAC6GCC,mbean))
+$(eval $(call TGTMAC68K,mbean))
 
 # Clean
 
