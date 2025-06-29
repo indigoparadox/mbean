@@ -19,6 +19,7 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
    maug_mlock( data_h, data );
    maug_cleanup_if_null_alloc( struct MBEAN_DATA*, data );
 
+#ifdef MBEAN_SOUND
    /* See if we're done playing a sound. */
    if( 1 == data->snd_cycles_left ) {
       debug_printf( 2, MS_FMT ": finished playing sound",
@@ -28,6 +29,7 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
    } else if( 0 < data->snd_cycles_left ) {
       data->snd_cycles_left--;
    }
+#endif /* MBEAN_SOUND */
 
    if( RETROCON_FLAG_ACTIVE == (RETROCON_FLAG_ACTIVE & data->con.flags) ) {
       /* Skip bean logic. */
@@ -42,12 +44,14 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
       MBEAN_FLAG_SETTLED == (MBEAN_FLAG_SETTLED & data->flags) &&
       0 == data->drops_sz
    ) {
+#ifdef MBEAN_SOUND
       if( 0 == data->snd_cycles_left ) {
          debug_printf( 2, MS_FMT ": playing sound...",
             retroflat_get_ms() );
          retrosnd_midi_note_on( MBEAN_SND_CHANNEL, 60, 127 );
          data->snd_cycles_left = MBEAN_SND_CYCLES;
       }
+#endif /* MBEAN_SOUND */
 
       debug_printf( 1, MS_FMT ": attempting gc...",
          retroflat_get_ms() );
@@ -217,7 +221,6 @@ int main( int argc, char* argv[] ) {
    struct RETROFLAT_ARGS args;
    struct MBEAN_DATA* data = NULL;
 
-
    /* === Setup === */
 
    logging_init();
@@ -230,6 +233,7 @@ int main( int argc, char* argv[] ) {
    retval = retroflat_init( argc, argv, &args );
    maug_cleanup_if_not_ok();
 
+#ifdef MBEAN_SOUND
    retval = retrosnd_init( &args );
    if( MERROR_SND == retval ) {
       retroflat_message( RETROFLAT_MSG_FLAG_WARNING, "Sound Error",
@@ -245,6 +249,8 @@ int main( int argc, char* argv[] ) {
    retrosnd_midi_set_voice( MBEAN_SND_CHANNEL, 0 );
    /* retrosnd_midi_set_control( MBEAN_SND_CHANNEL, 7, 127 );
    retrosnd_midi_set_control( MBEAN_SND_CHANNEL, 39, 0x3fff ); */
+
+#endif /* MBEAN_SOUND */
 
    debug_printf( 3, MS_FMT ": allocating data struct ("
       SIZE_T_FMT " bytes)...",
@@ -308,7 +314,9 @@ cleanup:
       maug_munlock( data_h, data );
    }
 
+#ifdef MBEAN_SOUND
    retrosnd_shutdown();
+#endif /* MBEAN_SOUND */
 
    if( NULL != data_h ) {
       maug_mlock( data_h, data );
