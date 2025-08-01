@@ -22,7 +22,7 @@ include maug/Makefile.inc
 
 all: mbean.sdl mbean.ale mbeanb.exe mbeannt.exe mbean.html mbeanw.exe mbeanb.exe mbean64.exe
 
-$(eval $(call MVFS,unscii-8.hex))
+$(eval $(call MVFS,unscii_8.hex unscii_x.hex))
 
 # PalmOS
 

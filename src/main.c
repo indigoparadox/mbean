@@ -265,7 +265,7 @@ int main( int argc, char* argv[] ) {
    maug_mzero( data, sizeof( struct MBEAN_DATA ) );
 
    /* TODO: Font support under WASM! */
-   retval = retrofont_load( "unscii-8.hex", &(data->font_h), 8, 33, 93 );
+   retval = retrofont_load( "unscii_8.hex", &(data->font_h), 8, 33, 93 );
    if( MERROR_OK != retval ) {
       retroflat_message(
          RETROFLAT_MSG_FLAG_ERROR, "Error", "Could not load font!" );
@@ -273,7 +273,7 @@ int main( int argc, char* argv[] ) {
    retval = MERROR_OK; /* XXX */
    maug_cleanup_if_not_ok();
 
-   retrocon_init( &(data->con), "unscii-8.hex",
+   retrocon_init( &(data->con), "unscii_8.hex",
       (retroflat_screen_w() >> 1) - 100,
       (retroflat_screen_h() >> 1) - 50,
       200, 100 );
