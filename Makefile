@@ -78,7 +78,7 @@ $(eval $(call TGTOS2SDL,mbean))
 
 # Mac
 
-$(eval $(call TGTMAC68K,mbean))
+$(eval $(call TGTMAC68K,mbean,,mbean.bmp,mBEN))
 
 # Clean
 

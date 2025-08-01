@@ -308,7 +308,7 @@ cleanup:
 
 #ifndef RETROFLAT_OS_WASM
 
-   if( NULL != data_h ) {
+   if( (MAUG_MHANDLE)NULL != data_h ) {
       maug_mlock( data_h, data );
       retrocon_shutdown( &(data->con) );
       maug_munlock( data_h, data );
@@ -318,7 +318,7 @@ cleanup:
    retrosnd_shutdown();
 #endif /* MBEAN_SOUND */
 
-   if( NULL != data_h ) {
+   if( (MAUG_MHANDLE)NULL != data_h ) {
       maug_mlock( data_h, data );
       maug_mfree( data->font_h );
       maug_munlock( data_h, data );
