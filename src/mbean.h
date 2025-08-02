@@ -68,7 +68,7 @@ struct MBEAN_DATA {
    int8_t drops[2];
    size_t drops_sz;
    /* Current dropping bean pair rotation. */
-   int8_t drops_rot;
+   retroflat_dir4_t drops_rot;
    int8_t drops_x;
    int8_t drops_y;
    int16_t score;
@@ -84,12 +84,29 @@ struct MBEAN_GC_NODE {
    struct MBEAN_GC_NODE* neighbors[4];
 };
 
+/**
+ * \brief Mark spaces that have beans but did not previously have beans as due
+ *        to be redrawn.
+ */
+void mbean_erase_bean_drops( struct MBEAN_DATA* g );
+
+/**
+ * \return MERROR_USR if bean rotation would collide with another bean, or
+ *         MERROR_OK otherwise.
+ */
+MERROR_RETVAL mbean_check_collision(
+   struct MBEAN_DATA* g,
+   int8_t pivot_x, int8_t pivot_y, retroflat_dir4_t pivot_r );
+
 void mbean_iter( struct MBEAN_DATA* g );
 
 void mbean_drop( struct MBEAN_DATA* g, int8_t x, int8_t y );
 
 void mbean_place_drop_tiles( struct MBEAN_DATA* g );
 
+/**
+ * \brief Rotate the current beans drop (if it is not blocked).
+ */
 void mbean_rotate_drops( struct MBEAN_DATA* g );
 
 void mbean_move_drops_x( struct MBEAN_DATA* g, int8_t x_m );
@@ -101,12 +118,8 @@ struct MBEAN_GC_NODE* mbean_gc_probe(
 void mbean_gc( struct MBEAN_DATA* g );
 
 #ifdef MBEAN_C
-int8_t MAUG_CONST gc_mbean_drop_rot_x[4] = { 1, 0, -1, 0 };
-int8_t MAUG_CONST gc_mbean_drop_rot_y[4] = { 0, 1, 0, -1 };
 RETROFLAT_COLOR g_mbean_colors[5];
 #else
-extern MAUG_CONST int8_t gc_mbean_drop_rot_x[4];
-extern MAUG_CONST int8_t gc_mbean_drop_rot_y[4];
 extern RETROFLAT_COLOR g_mbean_colors[5];
 #endif /* MBEAN_C */
 

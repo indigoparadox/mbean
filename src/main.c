@@ -170,8 +170,8 @@ display:
 
    /* Draw drops. */
    for( i = 0 ; data->drops_sz > i ; i++ ) {
-      x = data->drops_x + (i * gc_mbean_drop_rot_x[data->drops_rot]);
-      y = data->drops_y + (i * gc_mbean_drop_rot_y[data->drops_rot]);
+      x = data->drops_x + (i * gc_retroflat_offsets4_x[data->drops_rot]);
+      y = data->drops_y + (i * gc_retroflat_offsets4_y[data->drops_rot]);
       /* debug_printf( 3, "drop: %d, %d", x, y ); */
       retroflat_ellipse( NULL, g_mbean_colors[data->drops[i]],
          MBEAN_GRID_X_PX + (x * MBEAN_BEAN_W),
