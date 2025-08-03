@@ -21,7 +21,7 @@ include maug/Makefile.inc
 # Target-specific options.
 .PHONY: clean
 
-all: mbean.sdl mbean.ale mbeanb.exe mbeannt.exe mbean.html mbeanw.exe mbeanb.exe mbean64.exe mbean.m68k.dsk
+all: mbean.sdl mbean.ale mbeanb.exe mbeannt.exe mbean.html mbeanw.exe mbeanb.exe mbean64.exe mbean.m68k.dsk mbean.xlib
 
 $(eval $(call MVFS,unscii_8.hex unscii_x.hex))
 
@@ -39,9 +39,11 @@ $(eval $(call TGTUNIXALE,mbean))
 
 # Unix SDL
 
-#$(eval $(call TGTSDLICO,mbean))
-
 $(eval $(call TGTUNIXSDL,mbean))
+
+# Unix (xlib)
+
+$(eval $(call TGTUNIXXLIB,mbean))
 
 # WASM
 
