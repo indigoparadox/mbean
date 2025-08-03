@@ -15,6 +15,7 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
    struct RETROFLAT_INPUT input_evt;
    char score_str[MBEAN_SCORE_STR_SZ_MAX + 1] = { 0 };
    retrogui_idc_t idc_con = RETROGUI_IDC_NONE;
+   char hash_str[] = "Commit\n" MBEAN_COMMIT_HASH;
 
    maug_mlock( data_h, data );
    maug_cleanup_if_null_alloc( struct MBEAN_DATA*, data );
@@ -140,6 +141,13 @@ display:
          MBEAN_GRID_X_PX, MBEAN_GRID_Y_PX,
          MBEAN_GRID_W_PX, MBEAN_GRID_H_PX,
          0 );
+
+      hash_str[11] = '\0';
+      retrofont_string(
+         NULL, RETROFLAT_COLOR_RED, hash_str, 0,
+         data->font_h,
+         MBEAN_GRID_X_PX + MBEAN_GRID_W_PX + 10,
+         MBEAN_GRID_Y_PX + 60, 0, 0, 0 );
 
       data->flags |= MBEAN_FLAG_INIT_DONE;
    }
