@@ -181,10 +181,20 @@ display:
          0 );
    }
 
-   maug_snprintf( score_str, MBEAN_SCORE_STR_SZ_MAX,
-      "%d", data->score );
-   retrofont_string(
-      NULL, RETROFLAT_COLOR_RED, score_str, 0, data->font_h, 10, 10, 0, 0, 0 );
+   if( data->score_prev_draw != data->score ) {
+      /* Redraw the score. */
+      retroflat_rect(
+         NULL, RETROFLAT_COLOR_BLACK, 10, 10,
+         40, 20,
+         RETROFLAT_FLAGS_FILL );
+      maug_snprintf( score_str, MBEAN_SCORE_STR_SZ_MAX,
+         "Score\n%d", data->score );
+      retrofont_string(
+         NULL, RETROFLAT_COLOR_RED, score_str, 0,
+         data->font_h,
+         MBEAN_GRID_X_PX + MBEAN_GRID_W_PX + 10,
+         MBEAN_GRID_Y_PX + 10, 0, 0, 0 );
+   }
 
    retrocon_display( &(data->con), NULL );
 
@@ -281,6 +291,8 @@ int main( int argc, char* argv[] ) {
    data->con.lbuffer_color = RETROFLAT_COLOR_WHITE;
    data->con.sbuffer_color = RETROFLAT_COLOR_GRAY;
    data->con.bg_color = RETROFLAT_COLOR_BLACK;
+
+   data->score_prev_draw = -1; /* Force initial score draw. */
 
    maug_munlock( data_h, data );
 
