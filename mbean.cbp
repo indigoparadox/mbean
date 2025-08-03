@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="mbean" />
+		<Option makefile_is_custom="1" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="mbean.sdl">
+				<Option output="mbean.sdl" prefix_auto="0" extension_auto="0" />
+				<Option object_output="obj/Debug/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<MakeCommands>
+					<Build command="$make -f $makefile $target" />
+					<CompileFile command="$make -f $makefile $file" />
+					<Clean command="$make -f $makefile clean" />
+					<DistClean command="$make -f $makefile distclean$target" />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="maug/api/file/mac68k/mrapifil.h" />
+		<Unit filename="maug/api/file/null/mrapifil.h" />
+		<Unit filename="maug/api/file/unix/mrapifil.h" />
+		<Unit filename="maug/api/file/win/mrapifil.h" />
+		<Unit filename="maug/api/font/mac68k/mrapifon.h" />
+		<Unit filename="maug/api/font/null/mrapifon.h" />
+		<Unit filename="maug/api/font/soft/mrapifon.h" />
+		<Unit filename="maug/api/font/win/mrapifon.h" />
+		<Unit filename="maug/api/input/allegro/retapii.h" />
+		<Unit filename="maug/api/input/dosbios/retapii.h" />
+		<Unit filename="maug/api/input/glut/retapii.h" />
+		<Unit filename="maug/api/input/mac68k/retapii.h" />
+		<Unit filename="maug/api/input/nds/retapii.h" />
+		<Unit filename="maug/api/input/null/retapii.h" />
+		<Unit filename="maug/api/input/sdl/retapii.h" />
+		<Unit filename="maug/api/input/win/retapii.h" />
+		<Unit filename="maug/api/log/fallback/mrapilog.h" />
+		<Unit filename="maug/api/log/nds/mrapilog.h" />
+		<Unit filename="maug/api/log/unix/mrapilog.h" />
+		<Unit filename="maug/api/retro2d/allegro/retapid.h" />
+		<Unit filename="maug/api/retro2d/allegro/retapif.h" />
+		<Unit filename="maug/api/retro2d/dosbios/retapid.h" />
+		<Unit filename="maug/api/retro2d/dosbios/retapif.h" />
+		<Unit filename="maug/api/retro2d/glut/retapid.h" />
+		<Unit filename="maug/api/retro2d/glut/retapif.h" />
+		<Unit filename="maug/api/retro2d/mac68k/retapid.h" />
+		<Unit filename="maug/api/retro2d/mac68k/retapif.h" />
+		<Unit filename="maug/api/retro2d/nds/retapid.h" />
+		<Unit filename="maug/api/retro2d/nds/retapif.h" />
+		<Unit filename="maug/api/retro2d/null/retapid.h" />
+		<Unit filename="maug/api/retro2d/null/retapif.h" />
+		<Unit filename="maug/api/retro2d/sdl/retapid.h" />
+		<Unit filename="maug/api/retro2d/sdl/retapif.h" />
+		<Unit filename="maug/api/retro2d/win/retapid.h" />
+		<Unit filename="maug/api/retro2d/win/retapif.h" />
+		<Unit filename="maug/api/retro3d/null/retapi3.h" />
+		<Unit filename="maug/api/retro3d/opengl/retapi3.h" />
+		<Unit filename="maug/api/retro3d/small3dl/retapi3.h" />
+		<Unit filename="maug/api/retro3d/small3dl/small3dlib.h" />
+		<Unit filename="maug/api/sound/alsa/retapis.h" />
+		<Unit filename="maug/api/sound/dosbios/retapis.h" />
+		<Unit filename="maug/api/sound/nds/retapis.h" />
+		<Unit filename="maug/api/sound/null/retapis.h" />
+		<Unit filename="maug/api/sound/sdl/retapis.h" />
+		<Unit filename="maug/api/sound/win/retapis.h" />
+		<Unit filename="maug/src/marge.h" />
+		<Unit filename="maug/src/maug.h" />
+		<Unit filename="maug/src/mcss.h" />
+		<Unit filename="maug/src/mcssmerg.h" />
+		<Unit filename="maug/src/mdata.h" />
+		<Unit filename="maug/src/merror.h" />
+		<Unit filename="maug/src/mfile.h" />
+		<Unit filename="maug/src/mfmt.h" />
+		<Unit filename="maug/src/mfont8x8.h" />
+		<Unit filename="maug/src/mgrid.h" />
+		<Unit filename="maug/src/mhtml.h" />
+		<Unit filename="maug/src/mjson.h" />
+		<Unit filename="maug/src/mlegacy.h" />
+		<Unit filename="maug/src/mlispe.h" />
+		<Unit filename="maug/src/mlispp.h" />
+		<Unit filename="maug/src/mlisps.h" />
+		<Unit filename="maug/src/mmem.h" />
+		<Unit filename="maug/src/mparser.h" />
+		<Unit filename="maug/src/mplug.h" />
+		<Unit filename="maug/src/msect.h" />
+		<Unit filename="maug/src/mtypes.h" />
+		<Unit filename="maug/src/retroani.h" />
+		<Unit filename="maug/src/retrocfg.h" />
+		<Unit filename="maug/src/retrocon.h" />
+		<Unit filename="maug/src/retroflt.h" />
+		<Unit filename="maug/src/retrofnt.h" />
+		<Unit filename="maug/src/retrofp.h" />
+		<Unit filename="maug/src/retroglu.h" />
+		<Unit filename="maug/src/retrogui.h" />
+		<Unit filename="maug/src/retrogxc.h" />
+		<Unit filename="maug/src/retrohtr.h" />
+		<Unit filename="maug/src/retropth.h" />
+		<Unit filename="maug/src/retrosft.h" />
+		<Unit filename="maug/src/retrosnd.h" />
+		<Unit filename="maug/src/retrotil.h" />
+		<Unit filename="maug/src/retrowin.h" />
+		<Unit filename="maug/src/retroxpm.h" />
+		<Unit filename="maug/src/uprintf.h" />
+		<Unit filename="src/main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/mbean.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/mbean.h" />
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>
