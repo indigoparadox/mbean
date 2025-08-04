@@ -41,13 +41,19 @@ $(eval $(call TGTNDSLIBN,mbean,mbean.bmp))
 
 $(eval $(call TGTUNIXALE,mbean))
 
+$(eval $(call TGTTGZ,mbeanale,mbean.ale README.md))
+
 # Unix SDL
 
 $(eval $(call TGTUNIXSDL,mbean))
 
+$(eval $(call TGTTGZ,mbeansdl,mbean.sdl README.md))
+
 # Unix (xlib)
 
 $(eval $(call TGTUNIXXLIB,mbean))
+
+$(eval $(call TGTTGZ,mbeanxlib,mbean.xlib README.md))
 
 # WASM
 
@@ -59,17 +65,29 @@ $(eval $(call TGTDOSALE,mbean))
 
 $(eval $(call TGTDOSBIOS,mbean))
 
+$(eval $(call TGTZIP,mbeanb,mbeanb.exe README.md))
+
 # Win386
 
 $(eval $(call TGTWINICO,mbean))
 
 $(eval $(call TGTWIN386,mbean))
 
+# Win
+
 $(eval $(call TGTWIN16,mbean))
+
+$(eval $(call TGTISO,mbeanw3,mbeanw3.exe README.md))
+
+$(eval $(call TGTZIP,mbeanw3,mbeanw3.exe README.md))
 
 # WinNT
 
 $(eval $(call TGTWINNT,mbean))
+
+$(eval $(call TGTISO,mbeannt,mbeannt.exe README.md))
+
+$(eval $(call TGTZIP,mbeannt,mbeannt.exe README.md))
 
 $(eval $(call TGTWINSDL,mbean))
 

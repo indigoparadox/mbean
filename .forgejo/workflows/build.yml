@@ -1,0 +1,226 @@
+on: [push]
+jobs:
+  build:
+    runs-on: docker
+    container:
+      image: docker.io/library/debian:bookworm
+    steps:
+
+    - name: Install git
+      run: |
+        apt update && apt install -y git curl
+
+    - name: Checkout actions
+      run: |
+        git clone ${{ github.server_url }}/indigoparadox/actions actions
+
+    - name: Setup default source
+      uses: ./actions/debdefault
+
+    - name: Setup auxilliary source
+      uses: ./actions/debapt
+      with:
+        repos: forgejo-packaging+https://forgejo.interfinitydynamics.info/api/packages/packaging/debian+https://forgejo.interfinitydynamics.info/api/packages/packaging/debian/repository.key
+    
+    - name: Install build prerequisites
+      run: |
+        apt update && apt install -y build-essential libsdl2-dev libsdl2-mixer-dev xxd zip liballegro4-dev mkisofs watcom-sdl imagemagick retro68 file
+
+    - name: Install OpenSSH and setup keys
+      uses: ./actions/openssh
+      with:
+        deploy-key: "${{ secrets.DEPLOYKEY }}"
+   
+    - name: Checkout repo
+      uses: ./actions/checkout
+      with:
+        remote-ssh-port: ${{ vars.SSHPORT }}
+
+    - name: Create tag on IFDY
+      uses: ./actions/taghead
+      with:
+        api-user: ${{ vars.APIUSER }}
+        api-oauth2: ${{ secrets.APIOAUTH2IFDY }}
+
+    - name: Create tag on Codeberg
+      uses: ./actions/taghead
+      with:
+        remote-site: https://codeberg.org
+        api-user: ${{ vars.APIUSER }}
+        api-oauth2: ${{ secrets.APIOAUTH2CB }}
+
+    - name: "Build binary - UNIX SDL"
+      continue-on-error: true
+      uses: ./actions/build
+      with:
+        bin-name: mbeansdl.tgz
+
+    - name: "Upload binary - UNIX SDL IFDY"
+      continue-on-error: true
+      uses: ./actions/releases
+      with:
+        asset-file: mbeansdl.tgz
+        asset-file-name: mbean-sdl-amd64-GITDATE-GITHASH.tgz
+        api-user: ${{ vars.APIUSER }}
+        api-oauth2: ${{ secrets.APIOAUTH2IFDY }}
+
+    - name: "Upload binary - UNIX SDL Codeberg"
+      continue-on-error: true
+      uses: ./actions/releases
+      with:
+        remote-site: https://codeberg.org
+        asset-file: mbeansdl.tgz
+        asset-file-name: mbean-sdl-amd64-GITDATE-GITHASH.tgz
+        api-user: ${{ vars.APIUSER }}
+        api-oauth2: ${{ secrets.APIOAUTH2CB }}
+
+    - name: "Build binary - UNIX Allegro"
+      continue-on-error: true
+      uses: ./actions/build
+      with:
+        bin-name: mbeanale.tgz
+
+    - name: "Upload binary - UNIX Allegro IFDY"
+      continue-on-error: true
+      uses: ./actions/releases
+      with:
+        asset-file: mbeanale.tgz
+        asset-file-name: mbean-allegro-amd64-GITDATE-GITHASH.tgz
+        api-user: ${{ vars.APIUSER }}
+        api-oauth2: ${{ secrets.APIOAUTH2IFDY }}
+
+    - name: "Upload binary - UNIX Allegro Codeberg"
+      continue-on-error: true
+      uses: ./actions/releases
+      with:
+        remote-site: https://codeberg.org
+        asset-file: mbeanale.tgz
+        asset-file-name: mbean-allegro-amd64-GITDATE-GITHASH.tgz
+        api-user: ${{ vars.APIUSER }}
+        api-oauth2: ${{ secrets.APIOAUTH2CB }}
+
+    - name: "Build binary - UNIX xlib"
+      continue-on-error: true
+      uses: ./actions/build
+      with:
+        bin-name: mbeanxlib.tgz
+
+    - name: "Upload binary - UNIX xlib IFDY"
+      continue-on-error: true
+      uses: ./actions/releases
+      with:
+        asset-file: mbeanxlib.tgz
+        asset-file-name: mbean-xlib-amd64-GITDATE-GITHASH.tgz
+        api-user: ${{ vars.APIUSER }}
+        api-oauth2: ${{ secrets.APIOAUTH2IFDY }}
+
+    - name: "Upload binary - UNIX xlib Codeberg"
+      continue-on-error: true
+      uses: ./actions/releases
+      with:
+        remote-site: https://codeberg.org
+        asset-file: mbeanxlib.tgz
+        asset-file-name: mbean-xlib-amd64-GITDATE-GITHASH.tgz
+        api-user: ${{ vars.APIUSER }}
+        api-oauth2: ${{ secrets.APIOAUTH2CB }}
+
+    - name: "Build binary - Windows NT Native"
+      continue-on-error: true
+      uses: ./actions/build
+      with:
+        bin-name: mbeannt.zip
+
+    - name: "Upload binary - Windows NT Native IFDY"
+      continue-on-error: true
+      uses: ./actions/releases
+      with:
+        asset-file: mbeannt.zip
+        asset-file-name: mbean-winnt-x86-GITDATE-GITHASH.zip
+        api-user: ${{ vars.APIUSER }}
+        api-oauth2: ${{ secrets.APIOAUTH2IFDY }}
+
+    - name: "Upload binary - Windows NT Native Codeberg"
+      continue-on-error: true
+      uses: ./actions/releases
+      with:
+        remote-site: https://codeberg.org
+        asset-file: mbeannt.zip
+        asset-file-name: mbean-winnt-x86-GITDATE-GITHASH.zip
+        api-user: ${{ vars.APIUSER }}
+        api-oauth2: ${{ secrets.APIOAUTH2CB }}
+
+    - name: "Build binary - Windows 3.x Native"
+      continue-on-error: true
+      uses: ./actions/build
+      with:
+        bin-name: mbeanw3.zip
+
+    - name: "Upload binary - Windows 3.x Native IFDY"
+      continue-on-error: true
+      uses: ./actions/releases
+      with:
+        asset-file: mbeanw3.zip
+        asset-file-name: mbean-win3x-x86-GITDATE-GITHASH.zip
+        api-user: ${{ vars.APIUSER }}
+        api-oauth2: ${{ secrets.APIOAUTH2IFDY }}
+
+    - name: "Upload binary - Windows 3.x Native Codeberg"
+      continue-on-error: true
+      uses: ./actions/releases
+      with:
+        remote-site: https://codeberg.org
+        asset-file: mbeanw3.zip
+        asset-file-name: mbean-win3x-x86-GITDATE-GITHASH.zip
+        api-user: ${{ vars.APIUSER }}
+        api-oauth2: ${{ secrets.APIOAUTH2CB }}
+
+    - name: "Build binary - DOS BIOS"
+      continue-on-error: true
+      uses: ./actions/build
+      with:
+        bin-name: mbeanb.zip
+
+    - name: "Upload binary - DOS BIOS IFDY"
+      continue-on-error: true
+      uses: ./actions/releases
+      with:
+        asset-file: mbeanb.zip
+        asset-file-name: mbean-dosb-x86-GITDATE-GITHASH.zip
+        api-user: ${{ vars.APIUSER }}
+        api-oauth2: ${{ secrets.APIOAUTH2IFDY }}
+
+    - name: "Upload binary - DOS BIOS Codeberg"
+      continue-on-error: true
+      uses: ./actions/releases
+      with:
+        remote-site: https://codeberg.org
+        asset-file: mbeanb.zip
+        asset-file-name: mbean-dosb-x86-GITDATE-GITHASH.zip
+        api-user: ${{ vars.APIUSER }}
+        api-oauth2: ${{ secrets.APIOAUTH2CB }}
+
+    - name: "Build binary - Mac System 6"
+      continue-on-error: true
+      uses: ./actions/build
+      with:
+        bin-name: mbean.m68k.dsk
+
+    - name: "Upload binary - Mac System 6 IFDY"
+      continue-on-error: true
+      uses: ./actions/releases
+      with:
+        asset-file: mbean.m68k.dsk
+        asset-file-name: mbean-mac6-68k-GITDATE-GITHASH.dsk
+        api-user: ${{ vars.APIUSER }}
+        api-oauth2: ${{ secrets.APIOAUTH2IFDY }}
+
+    - name: "Upload binary - Mac System 6 Codeberg"
+      continue-on-error: true
+      uses: ./actions/releases
+      with:
+        remote-site: https://codeberg.org
+        asset-file: mbean.m68k.dsk
+        asset-file-name: mbean-mac6-68k-GITDATE-GITHASH.dsk
+        api-user: ${{ vars.APIUSER }}
+        api-oauth2: ${{ secrets.APIOAUTH2CB }}
+
