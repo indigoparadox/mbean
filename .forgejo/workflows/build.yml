@@ -20,11 +20,11 @@ jobs:
     - name: Setup auxilliary source
       uses: ./actions/debapt
       with:
-        repos: forgejo-packaging+https://forgejo.interfinitydynamics.info/api/packages/packaging/debian+https://forgejo.interfinitydynamics.info/api/packages/packaging/debian/repository.key
+        repos: forgejo-packaging+https://forgejo.interfinitydynamics.info/api/packages/packaging/debian+https://forgejo.interfinitydynamics.info/api/packages/packaging/debian/repository.key forgejo-devkitpro+https://forgejo.interfinitydynamics.info/api/packages/devkitpro/debian+https://forgejo.interfinitydynamics.info/api/packages/devkitpro/debian/repository.key
     
     - name: Install build prerequisites
       run: |
-        apt update && apt install -y build-essential libsdl2-dev libsdl2-mixer-dev xxd zip liballegro4-dev mkisofs watcom-sdl imagemagick retro68 file
+        apt update && apt install -y build-essential libsdl2-dev libsdl2-mixer-dev xxd zip liballegro4-dev mkisofs watcom-sdl imagemagick retro68 file nds-dev
 
     - name: Install OpenSSH and setup keys
       uses: ./actions/openssh
@@ -46,6 +46,31 @@ jobs:
       uses: ./actions/taghead
       with:
         remote-site: https://codeberg.org
+        api-user: ${{ vars.APIUSER }}
+        api-oauth2: ${{ secrets.APIOAUTH2CB }}
+
+    - name: "Build binary - NDS"
+      continue-on-error: true
+      uses: ./actions/build
+      with:
+        bin-name: mbean.nds
+
+    - name: "Upload binary - NDS IFDY"
+      continue-on-error: true
+      uses: ./actions/releases
+      with:
+        asset-file: mbean.nds
+        asset-file-name: mbean-GITDATE-GITHASH.nds
+        api-user: ${{ vars.APIUSER }}
+        api-oauth2: ${{ secrets.APIOAUTH2IFDY }}
+
+    - name: "Upload binary - NDS Codeberg"
+      continue-on-error: true
+      uses: ./actions/releases
+      with:
+        remote-site: https://codeberg.org
+        asset-file: mbean.nds
+        asset-file-name: mbean-GITDATE-GITHASH.nds
         api-user: ${{ vars.APIUSER }}
         api-oauth2: ${{ secrets.APIOAUTH2CB }}
 
