@@ -77,6 +77,8 @@ struct MBEAN_DATA {
    int16_t wait;
    uint16_t snd_cycles_left;
    MAUG_MHANDLE font_h;
+   /*! \brief Ignore rotate button until this ms. Special debounce measure. */
+   retroflat_ms_t rotate_next;
 };
 
 struct MBEAN_GC_NODE {

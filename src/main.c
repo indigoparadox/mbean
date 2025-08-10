@@ -111,8 +111,10 @@ check_input:
       break;
 
    retroflat_case_key( RETROFLAT_KEY_SPACE, RETROFLAT_PAD_A )
+      /* Check rotate debounce flag. */
       if( MBEAN_FLAG_ROT_LAST != (MBEAN_FLAG_ROT_LAST & data->flags) ) {
          mbean_rotate_drops( data );
+         data->rotate_next = retroflat_get_ms() + 100;
       }
       break;
 
@@ -124,8 +126,10 @@ check_input:
 #endif /* !RETROFLAT_NO_KEYBOARD */
    }
 
-   /* TODO: Have a timer to toggle rotation-suppression flag. */
-   /* data->flags &= ~MBEAN_FLAG_ROT_LAST; */
+   /* Have a timer toggle rotation-suppression flag. */
+   if( retroflat_get_ms() >= data->rotate_next ) {
+      data->flags &= ~MBEAN_FLAG_ROT_LAST;
+   }
  
    /*  === Drawing === */
 
