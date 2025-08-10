@@ -3,7 +3,7 @@
 
 #include "mbean.h"
 
-#define MBEAN_SCORE_STR_SZ_MAX 10
+#define MBEAN_SCORE_STR_SZ_MAX 16
 
 void mbean_loop( MAUG_MHANDLE data_h ) {
    struct MBEAN_DATA* data = NULL;
@@ -90,37 +90,42 @@ check_input:
    }
 
    switch( input ) {
-   case RETROFLAT_KEY_RIGHT:
+   retroflat_case_key( RETROFLAT_KEY_RIGHT, RETROFLAT_PAD_RIGHT )
       mbean_move_drops_x( data, 1 );
+      /* Reset rotate flag if rotate not pressed. */
+      data->flags &= ~MBEAN_FLAG_ROT_LAST;
       break;
 
-   case RETROFLAT_KEY_LEFT:
+   retroflat_case_key( RETROFLAT_KEY_LEFT, RETROFLAT_PAD_LEFT )
       mbean_move_drops_x( data, -1 );
+      /* Reset rotate flag if rotate not pressed. */
+      data->flags &= ~MBEAN_FLAG_ROT_LAST;
       break;
 
-   case RETROFLAT_KEY_DOWN:
+   retroflat_case_key( RETROFLAT_KEY_DOWN, RETROFLAT_PAD_DOWN )
       debug_printf( 0, MS_FMT ": setting wait to %d...",
          retroflat_get_ms(), MBEAN_WAIT_SKIP );
       data->wait = MBEAN_WAIT_SKIP;
+      /* Reset rotate flag if rotate not pressed. */
+      data->flags &= ~MBEAN_FLAG_ROT_LAST;
       break;
 
-   case RETROFLAT_KEY_SPACE:
+   retroflat_case_key( RETROFLAT_KEY_SPACE, RETROFLAT_PAD_A )
       if( MBEAN_FLAG_ROT_LAST != (MBEAN_FLAG_ROT_LAST & data->flags) ) {
          mbean_rotate_drops( data );
       }
       break;
 
+#ifndef RETROFLAT_NO_KEYBOARD
    case RETROFLAT_KEY_ESC:
       error_printf( "quitting due to keypress..." );
       retroflat_quit( 0 );
       break;
+#endif /* !RETROFLAT_NO_KEYBOARD */
    }
 
-   /* Reset rotate flag if rotate not pressed. */
-   if( RETROFLAT_KEY_SPACE != input ) {
-      /* TODO: Have a timer to suppress rotation flag. */
-      data->flags &= ~MBEAN_FLAG_ROT_LAST;
-   }
+   /* TODO: Have a timer to toggle rotation-suppression flag. */
+   /* data->flags &= ~MBEAN_FLAG_ROT_LAST; */
  
    /*  === Drawing === */
 
@@ -196,7 +201,7 @@ display:
          40, 20,
          RETROFLAT_FLAGS_FILL );
       maug_snprintf( score_str, MBEAN_SCORE_STR_SZ_MAX,
-         "Score\n%d", data->score );
+         "Score\n%04d", data->score );
       retrofont_string(
          NULL, RETROFLAT_COLOR_RED, score_str, 0,
          data->font_h,

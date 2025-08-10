@@ -9,6 +9,7 @@ FORCE_MVFS := 1
 C_FILES := src/main.c src/mbean.c
 RETROFLAT_DOS_MEM_LARGE=1
 #RETROFLAT_FORCE_LOG_MFILE := 1
+#SDL_VER_UNIX := 1
 
 GLOBAL_DEFINES += -DMBEAN_COMMIT_HASH="\"$(shell git rev-parse HEAD)\""
 
@@ -36,6 +37,14 @@ $(eval $(call TGTPALM,mbean))
 # Nintendo DS
 
 $(eval $(call TGTNDSLIBN,mbean,mbean.bmp))
+
+# Nintendo Wii
+
+$(eval $(call TGTWIILIBO,mbean))
+
+# Nintendo Switch
+
+$(eval $(call TGTNXSDL,mbean))
 
 # Unix Allegro
 
