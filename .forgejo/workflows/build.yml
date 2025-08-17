@@ -30,11 +30,28 @@ jobs:
       uses: ./actions/openssh
       with:
         deploy-key: "${{ secrets.DEPLOYKEY }}"
+        ssh-key-algo: ed25519
    
     - name: Checkout repo
       uses: ./actions/checkout
       with:
         remote-ssh-port: ${{ vars.SSHPORT }}
+
+    - name: "Build binary - html"
+      continue-on-error: true
+      uses: ./actions/buildemcc
+      with:
+        bin-name: mbean.html
+
+    - name: "Upload to web"
+      uses: ./actions/scp
+      with:
+        asset-files: mbean.html mbean.js mbean.wasm unscii_8.hex
+        remote-ssh-user: ${{ vars.WASMUSER }}
+        remote-ssh-host: ${{ vars.WASMHOST }}
+        remote-path: /home/public/mbean
+        remove-first: true
+        mkdir-first: true
 
     - name: Create tag on IFDY
       uses: ./actions/taghead
