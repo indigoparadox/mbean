@@ -1,4 +1,7 @@
-on: [push]
+on:
+  push:
+    branches:
+      - master
 jobs:
   build:
     runs-on: docker
@@ -48,8 +51,8 @@ jobs:
       with:
         asset-files: mbean.html mbean.js mbean.wasm unscii_8.hex
         remote-ssh-user: ${{ secrets.WASMUSER }}
-        remote-ssh-host: ${{ secrets.WASMHOST }}
-        remote-path: ${{ secrets.WASMPATH }}
+        remote-ssh-host: ${{ vars.WASMHOST }}
+        remote-path: ${{ vars.WASMPATH }}
         remove-first: true
         mkdir-first: true
 
