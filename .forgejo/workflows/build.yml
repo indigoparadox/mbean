@@ -47,9 +47,9 @@ jobs:
       uses: ./actions/scp
       with:
         asset-files: mbean.html mbean.js mbean.wasm unscii_8.hex
-        remote-ssh-user: ${{ vars.WASMUSER }}
-        remote-ssh-host: ${{ vars.WASMHOST }}
-        remote-path: /home/public/mbean
+        remote-ssh-user: ${{ secrets.WASMUSER }}
+        remote-ssh-host: ${{ secrets.WASMHOST }}
+        remote-path: ${{ secrets.WASMPATH }}
         remove-first: true
         mkdir-first: true
 
