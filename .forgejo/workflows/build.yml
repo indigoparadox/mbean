@@ -98,13 +98,13 @@ jobs:
       continue-on-error: true
       uses: ./actions/build
       with:
-        bin-name: mbeansdl.tgz
+        bin-name: mbeansdl.x86_64.tgz
 
     - name: "Upload binary - UNIX SDL IFDY"
       continue-on-error: true
       uses: ./actions/releases
       with:
-        asset-file: mbeansdl.tgz
+        asset-file: mbeansdl.x86_64.tgz
         asset-file-name: mbean-sdl-amd64-GITDATE-GITHASH.tgz
         api-user: ${{ vars.APIUSER }}
         api-oauth2: ${{ secrets.APIOAUTH2IFDY }}
@@ -114,7 +114,7 @@ jobs:
       uses: ./actions/releases
       with:
         remote-site: https://codeberg.org
-        asset-file: mbeansdl.tgz
+        asset-file: mbeansdl.x86_64.tgz
         asset-file-name: mbean-sdl-amd64-GITDATE-GITHASH.tgz
         api-user: ${{ vars.APIUSER }}
         api-oauth2: ${{ secrets.APIOAUTH2CB }}
@@ -123,13 +123,13 @@ jobs:
       continue-on-error: true
       uses: ./actions/build
       with:
-        bin-name: mbeanale.tgz
+        bin-name: mbeanale.x86_64.tgz
 
     - name: "Upload binary - UNIX Allegro IFDY"
       continue-on-error: true
       uses: ./actions/releases
       with:
-        asset-file: mbeanale.tgz
+        asset-file: mbeanale.x86_64.tgz
         asset-file-name: mbean-allegro-amd64-GITDATE-GITHASH.tgz
         api-user: ${{ vars.APIUSER }}
         api-oauth2: ${{ secrets.APIOAUTH2IFDY }}
@@ -139,7 +139,7 @@ jobs:
       uses: ./actions/releases
       with:
         remote-site: https://codeberg.org
-        asset-file: mbeanale.tgz
+        asset-file: mbeanale.x86_64.tgz
         asset-file-name: mbean-allegro-amd64-GITDATE-GITHASH.tgz
         api-user: ${{ vars.APIUSER }}
         api-oauth2: ${{ secrets.APIOAUTH2CB }}
@@ -148,13 +148,13 @@ jobs:
       continue-on-error: true
       uses: ./actions/build
       with:
-        bin-name: mbeanxlib.tgz
+        bin-name: mbeanxlib.x86_64.tgz
 
     - name: "Upload binary - UNIX xlib IFDY"
       continue-on-error: true
       uses: ./actions/releases
       with:
-        asset-file: mbeanxlib.tgz
+        asset-file: mbeanxlib.x86_64.tgz
         asset-file-name: mbean-xlib-amd64-GITDATE-GITHASH.tgz
         api-user: ${{ vars.APIUSER }}
         api-oauth2: ${{ secrets.APIOAUTH2IFDY }}
@@ -164,7 +164,7 @@ jobs:
       uses: ./actions/releases
       with:
         remote-site: https://codeberg.org
-        asset-file: mbeanxlib.tgz
+        asset-file: mbeanxlib.x86_64.tgz
         asset-file-name: mbean-xlib-amd64-GITDATE-GITHASH.tgz
         api-user: ${{ vars.APIUSER }}
         api-oauth2: ${{ secrets.APIOAUTH2CB }}

@@ -50,19 +50,19 @@ $(eval $(call TGTNXSDL,mbean))
 
 $(eval $(call TGTUNIXALE,mbean))
 
-$(eval $(call TGTTGZ,mbeanale,mbean.ale README.md))
+$(eval $(call TGTTGZ,mbeanale,mbean.$(shell uname -m).ale README.md))
 
 # Unix SDL
 
 $(eval $(call TGTUNIXSDL,mbean))
 
-$(eval $(call TGTTGZ,mbeansdl,mbean.sdl README.md))
+$(eval $(call TGTTGZ,mbeansdl,mbean.$(shell uname -m).sdl README.md))
 
 # Unix (xlib)
 
 $(eval $(call TGTUNIXXLIB,mbean))
 
-$(eval $(call TGTTGZ,mbeanxlib,mbean.xlib README.md))
+$(eval $(call TGTTGZ,mbeanxlib,mbean.$(shell uname -m).xlib README.md))
 
 # WASM
 
