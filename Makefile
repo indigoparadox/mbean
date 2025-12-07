@@ -26,7 +26,7 @@ include maug/Makefile.inc
 # Target-specific options.
 .PHONY: clean
 
-all: mbean.sdl mbean.ale mbeanb.exe mbeannt.exe mbean.html mbeanw.exe mbeanb.exe mbean64.exe mbean.m68k.dsk mbean.xlib
+all: mbean.$(shell uname -m).sdl mbean.$(shell uname -m).ale mbeanb.exe mbeannt.exe mbean.html mbeanw.exe mbeanb.exe mbean64.exe mbean.m68k.dsk mbean.$(shell uname -m).xlib
 
 $(eval $(call MVFS,unscii_8.hex unscii_x.hex))
 
@@ -113,6 +113,8 @@ $(eval $(call TGTOS2SDL,mbean))
 # Mac
 
 $(eval $(call TGTMAC68K,mbean,,mbean.bmp,mBEN))
+
+$(eval $(call TGTMAC68K7,mbean,,mbean.bmp,mBEN))
 
 # Clean
 
