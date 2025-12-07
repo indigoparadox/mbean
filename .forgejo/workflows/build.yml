@@ -98,14 +98,14 @@ jobs:
       continue-on-error: true
       uses: ./actions/build
       with:
-        bin-name: mbeansdl.x86_64.tgz
+        bin-name: mbeansdl.Linux_x86_64.tgz
 
     - name: "Upload binary - UNIX SDL IFDY"
       continue-on-error: true
       uses: ./actions/releases
       with:
-        asset-file: mbeansdl.x86_64.tgz
-        asset-file-name: mbean-sdl-amd64-GITDATE-GITHASH.tgz
+        asset-file: mbeansdl.Linux_x86_64.tgz
+        asset-file-name: mbean-sdl-linux-amd64-GITDATE-GITHASH.tgz
         api-user: ${{ vars.APIUSER }}
         api-oauth2: ${{ secrets.APIOAUTH2IFDY }}
 
@@ -114,8 +114,8 @@ jobs:
       uses: ./actions/releases
       with:
         remote-site: https://codeberg.org
-        asset-file: mbeansdl.x86_64.tgz
-        asset-file-name: mbean-sdl-amd64-GITDATE-GITHASH.tgz
+        asset-file: mbeansdl.Linux_x86_64.tgz
+        asset-file-name: mbean-sdl-linux-amd64-GITDATE-GITHASH.tgz
         api-user: ${{ vars.APIUSER }}
         api-oauth2: ${{ secrets.APIOAUTH2CB }}
 
@@ -123,14 +123,14 @@ jobs:
       continue-on-error: true
       uses: ./actions/build
       with:
-        bin-name: mbeanale.x86_64.tgz
+        bin-name: mbeanale.Linux_x86_64.tgz
 
     - name: "Upload binary - UNIX Allegro IFDY"
       continue-on-error: true
       uses: ./actions/releases
       with:
-        asset-file: mbeanale.x86_64.tgz
-        asset-file-name: mbean-allegro-amd64-GITDATE-GITHASH.tgz
+        asset-file: mbeanale.Linux_x86_64.tgz
+        asset-file-name: mbean-allegro-linux-amd64-GITDATE-GITHASH.tgz
         api-user: ${{ vars.APIUSER }}
         api-oauth2: ${{ secrets.APIOAUTH2IFDY }}
 
@@ -139,8 +139,8 @@ jobs:
       uses: ./actions/releases
       with:
         remote-site: https://codeberg.org
-        asset-file: mbeanale.x86_64.tgz
-        asset-file-name: mbean-allegro-amd64-GITDATE-GITHASH.tgz
+        asset-file: mbeanale.Linux_x86_64.tgz
+        asset-file-name: mbean-allegro-linux-amd64-GITDATE-GITHASH.tgz
         api-user: ${{ vars.APIUSER }}
         api-oauth2: ${{ secrets.APIOAUTH2CB }}
 
@@ -148,14 +148,14 @@ jobs:
       continue-on-error: true
       uses: ./actions/build
       with:
-        bin-name: mbeanxlib.x86_64.tgz
+        bin-name: mbeanxlib.Linux_x86_64.tgz
 
     - name: "Upload binary - UNIX xlib IFDY"
       continue-on-error: true
       uses: ./actions/releases
       with:
-        asset-file: mbeanxlib.x86_64.tgz
-        asset-file-name: mbean-xlib-amd64-GITDATE-GITHASH.tgz
+        asset-file: mbeanxlib.Linux_x86_64.tgz
+        asset-file-name: mbean-xlib-linux-amd64-GITDATE-GITHASH.tgz
         api-user: ${{ vars.APIUSER }}
         api-oauth2: ${{ secrets.APIOAUTH2IFDY }}
 
@@ -164,8 +164,8 @@ jobs:
       uses: ./actions/releases
       with:
         remote-site: https://codeberg.org
-        asset-file: mbeanxlib.x86_64.tgz
-        asset-file-name: mbean-xlib-amd64-GITDATE-GITHASH.tgz
+        asset-file: mbeanxlib.Linux_x86_64.tgz
+        asset-file-name: mbean-xlib-linux-amd64-GITDATE-GITHASH.tgz
         api-user: ${{ vars.APIUSER }}
         api-oauth2: ${{ secrets.APIOAUTH2CB }}
 
