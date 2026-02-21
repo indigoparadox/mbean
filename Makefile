@@ -46,6 +46,10 @@ $(eval $(call TGTWIILIBO,mbean))
 
 $(eval $(call TGTNXSDL,mbean))
 
+# PlayStation
+
+$(eval $(call TGTPSXPSN,mbean,unscii_x.hex))
+
 # Unix Allegro
 
 $(eval $(call TGTUNIXALE,mbean))

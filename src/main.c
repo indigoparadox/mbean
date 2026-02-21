@@ -139,6 +139,7 @@ display:
 
    if( MBEAN_FLAG_INIT_DONE != (MBEAN_FLAG_INIT_DONE & data->flags) ) {
       /* Black out background (Windows and some platforms don't zero). */
+      /* TODO: This is causing flicker on slower platforms! */
       retroflat_rect(
          NULL, RETROFLAT_COLOR_BLACK, 0, 0,
          retroflat_screen_w(), retroflat_screen_h(),
@@ -205,7 +206,7 @@ display:
          40, 20,
          RETROFLAT_FLAGS_FILL );
       maug_snprintf( score_str, MBEAN_SCORE_STR_SZ_MAX,
-         "Score\n%04d", data->score );
+         "Score %04d", data->score );
       retrofont_string(
          NULL, RETROFLAT_COLOR_RED, score_str, 0,
          data->font_h,
