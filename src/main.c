@@ -167,19 +167,32 @@ display:
       for( x = 0 ; MBEAN_GRID_W > x ; x++ ) {
          if( 0 < data->grid[x][y] ) {
             /* Draw colorful bean tiles. */
-            retroflat_ellipse( NULL, g_mbean_colors[data->grid[x][y]],
+#ifdef MBEAN_CACHE_BEANS
+            retroflat_blit_bitmap(
+               NULL, &(data->bean_bmps[data->grid[x][y] - 1]),
+               0, 0, 
                MBEAN_GRID_X_PX + (x * MBEAN_BEAN_W),
-               MBEAN_GRID_Y_PX + (y * MBEAN_BEAN_W),
+               MBEAN_GRID_Y_PX + (y * MBEAN_BEAN_H),
                MBEAN_BEAN_W,
+               MBEAN_BEAN_H,
+               1 );
+#else
+            retroflat_ellipse( NULL,
+               data->bean_colors[data->grid[x][y] - 1],
+               MBEAN_GRID_X_PX + (x * MBEAN_BEAN_W),
+               MBEAN_GRID_Y_PX + (y * MBEAN_BEAN_H),
                MBEAN_BEAN_W,
+               MBEAN_BEAN_H,
                0 );
+#endif /* MBEAN_CACHE_BEANS */
          } else if( MBEAN_TILE_PURGE == data->grid[x][y] ) {
             /* Overdraw dirty bean tiles with background. */
-            retroflat_ellipse( NULL, RETROFLAT_COLOR_BLACK,
+            retroflat_ellipse( NULL,
+               RETROFLAT_COLOR_BLACK,
                MBEAN_GRID_X_PX + (x * MBEAN_BEAN_W),
-               MBEAN_GRID_Y_PX + (y * MBEAN_BEAN_W),
+               MBEAN_GRID_Y_PX + (y * MBEAN_BEAN_H),
                MBEAN_BEAN_W,
-               MBEAN_BEAN_W,
+               MBEAN_BEAN_H,
                0 );
             data->grid[x][y] = 0;
          }
@@ -191,12 +204,24 @@ display:
       x = data->drops_x + (i * gc_retroflat_offsets4_x[data->drops_rot]);
       y = data->drops_y + (i * gc_retroflat_offsets4_y[data->drops_rot]);
       /* debug_printf( 3, "drop: %d, %d", x, y ); */
-      retroflat_ellipse( NULL, g_mbean_colors[data->drops[i]],
+#ifdef MBEAN_CACHE_BEANS
+      retroflat_blit_bitmap(
+         NULL, &(data->bean_bmps[data->drops[i] - 1]),
+         0, 0, 
          MBEAN_GRID_X_PX + (x * MBEAN_BEAN_W),
-         MBEAN_GRID_Y_PX + (y * MBEAN_BEAN_W),
+         MBEAN_GRID_Y_PX + (y * MBEAN_BEAN_H),
          MBEAN_BEAN_W,
+         MBEAN_BEAN_H,
+         1 );
+#else
+      retroflat_ellipse( NULL,
+         data->bean_colors[data->drops[i] - 1],
+         MBEAN_GRID_X_PX + (x * MBEAN_BEAN_W),
+         MBEAN_GRID_Y_PX + (y * MBEAN_BEAN_H),
          MBEAN_BEAN_W,
+         MBEAN_BEAN_H,
          0 );
+#endif /* MBEAN_CACHE_BEANS */
    }
 
    if( data->score_prev_draw != data->score ) {
@@ -248,6 +273,7 @@ int main( int argc, char* argv[] ) {
    MAUG_MHANDLE data_h = NULL;
    struct RETROFLAT_ARGS args;
    struct MBEAN_DATA* data = NULL;
+   size_t i = 0;
 
    /* === Setup === */
 
@@ -284,9 +310,7 @@ int main( int argc, char* argv[] ) {
       SIZE_T_FMT " bytes)...",
       retroflat_get_ms(), sizeof( struct MBEAN_DATA ) );
 
-   data_h = maug_malloc( 1, sizeof( struct MBEAN_DATA ) );
-   maug_cleanup_if_null_alloc( MAUG_MHANDLE, data_h );
-
+   maug_malloc_test( data_h, 1, sizeof( struct MBEAN_DATA ) );
    maug_mlock( data_h, data );
    maug_cleanup_if_null_alloc( struct MBEAN_DATA*, data );
 
@@ -312,12 +336,30 @@ int main( int argc, char* argv[] ) {
 
    data->score_prev_draw = -1; /* Force initial score draw. */
 
-   maug_munlock( data_h, data );
+   data->bean_colors[0] = RETROFLAT_COLOR_GRAY;
+   data->bean_colors[1] = RETROFLAT_COLOR_RED;
+   data->bean_colors[2] = RETROFLAT_COLOR_GREEN;
+   data->bean_colors[3] = RETROFLAT_COLOR_BLUE;
 
-   g_mbean_colors[1] = RETROFLAT_COLOR_GRAY;
-   g_mbean_colors[2] = RETROFLAT_COLOR_RED;
-   g_mbean_colors[3] = RETROFLAT_COLOR_GREEN;
-   g_mbean_colors[4] = RETROFLAT_COLOR_BLUE;
+#ifdef MBEAN_CACHE_BEANS
+   for( i = 0 ; MBEAN_BEANS_CT > i ; i++ ) {
+      debug_printf( 1, "caching bean " SIZE_T_FMT "...", i );
+      retval = retroflat_create_bitmap(
+         MBEAN_BEAN_W, MBEAN_BEAN_H, &(data->bean_bmps[i]), 0 );
+      maug_cleanup_if_not_ok();
+      retval = retroflat_draw_lock( &(data->bean_bmps[i]) );
+      maug_cleanup_if_not_ok();
+      retroflat_rect( &(data->bean_bmps[i]),
+         RETROFLAT_COLOR_BLACK,
+         0, 0, MBEAN_BEAN_W, MBEAN_BEAN_H, 0 );
+      retroflat_ellipse( &(data->bean_bmps[i]),
+         data->bean_colors[i],
+         0, 0, MBEAN_BEAN_W, MBEAN_BEAN_H, 0 );
+      retroflat_draw_release( &(data->bean_bmps[i]) );
+   }
+#endif /* MBEAN_CACHE_BEANS */
+
+   maug_munlock( data_h, data );
 
    /*
    dump_palette();

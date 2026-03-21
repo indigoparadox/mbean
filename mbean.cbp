@@ -7,8 +7,8 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="mbean.sdl">
-				<Option output="mbean.sdl" prefix_auto="0" extension_auto="0" />
+			<Target title="mbean.Linux_x86_64.sdl">
+				<Option output="mbean.Linux_x86_64.sdl" prefix_auto="0" extension_auto="0" />
 				<Option object_output="obj/Debug/" />
 				<Option type="0" />
 				<Option compiler="gcc" />

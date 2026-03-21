@@ -13,6 +13,10 @@
 #  define MBEAN_BEAN_W 8
 #endif /* !MBEAN_BEAN_W */
 
+#ifndef MBEAN_BEAN_H
+#  define MBEAN_BEAN_H 8
+#endif /* !MBEAN_BEAN_W */
+
 #ifndef MBEAN_TICK_WAIT
 #  define MBEAN_TICK_WAIT 10
 #endif /* !MBEAN_TICK_WAIT */
@@ -20,6 +24,8 @@
 #ifndef MBEAN_GC_NODES_SZ_MAX
 #  define MBEAN_GC_NODES_SZ_MAX 20
 #endif /* !MBEAN_GC_NODES_SZ_MAX */
+
+#define MBEAN_BEANS_CT 4
 
 #define MBEAN_GRID_W 10
 #define MBEAN_GRID_H 15
@@ -79,6 +85,10 @@ struct MBEAN_DATA {
    MAUG_MHANDLE font_h;
    /*! \brief Ignore rotate button until this ms. Special debounce measure. */
    retroflat_ms_t rotate_next;
+   RETROFLAT_COLOR bean_colors[MBEAN_BEANS_CT];
+#ifdef MBEAN_CACHE_BEANS
+   struct RETROFLAT_BITMAP bean_bmps[MBEAN_BEANS_CT];
+#endif /* MBEAN_CACHE_BEANS */
 };
 
 struct MBEAN_GC_NODE {
@@ -120,12 +130,6 @@ struct MBEAN_GC_NODE* mbean_gc_probe(
    struct MBEAN_GC_NODE* nodes, size_t* nodes_sz );
 
 void mbean_gc( struct MBEAN_DATA* g );
-
-#ifdef MBEAN_C
-RETROFLAT_COLOR g_mbean_colors[5];
-#else
-extern RETROFLAT_COLOR g_mbean_colors[5];
-#endif /* MBEAN_C */
 
 #endif /* MBEAN_H */
 

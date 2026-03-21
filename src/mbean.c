@@ -134,8 +134,8 @@ void mbean_drop( struct MBEAN_DATA* g, int8_t x, int8_t y ) {
    /* Create a new bean drop. */
 
    g->drops_sz = 2;
-   g->drops[0] = 1 + retroflat_get_rand() % 4;
-   g->drops[1] = 1 + retroflat_get_rand() % 4;
+   g->drops[0] = 1 + retroflat_get_rand() % MBEAN_BEANS_CT;
+   g->drops[1] = 1 + retroflat_get_rand() % MBEAN_BEANS_CT;
    g->drops_x = x;
    g->drops_y = 0;
    g->drops_rot = RETROFLAT_DIR4_EAST;
