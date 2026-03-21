@@ -27,7 +27,7 @@ jobs:
     
     - name: Install build prerequisites
       run: |
-        apt update && apt install -y build-essential libsdl2-dev libsdl2-mixer-dev xxd zip liballegro4-dev mkisofs watcom-sdl imagemagick retro68 file nds-dev psn00bsdk
+        apt update && apt install -y build-essential libsdl1.2-dev libsdl-mixer1.2-dev libsdl2-dev libsdl2-mixer-dev xxd zip liballegro4-dev mkisofs watcom-sdl imagemagick retro68 file nds-dev psn00bsdk
 
     - name: Install OpenSSH and setup keys
       uses: ./actions/openssh
