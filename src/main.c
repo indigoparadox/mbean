@@ -15,7 +15,7 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
    struct RETROFLAT_INPUT input_evt;
    char score_str[MBEAN_SCORE_STR_SZ_MAX + 1] = { 0 };
    retrogui_idc_t idc_con = RETROGUI_IDC_NONE;
-   char hash_str[] = "Commit\n" MBEAN_COMMIT_HASH;
+   char hash_str[] = "Commit \n" MBEAN_COMMIT_HASH;
 
    maug_mlock( data_h, data );
    maug_cleanup_if_null_alloc( struct MBEAN_DATA*, data );
@@ -312,7 +312,7 @@ int main( int argc, char* argv[] ) {
 
    maug_malloc_test( data_h, 1, sizeof( struct MBEAN_DATA ) );
    maug_mlock( data_h, data );
-   maug_cleanup_if_null_alloc( struct MBEAN_DATA*, data );
+   maug_cleanup_if_null_lock( struct MBEAN_DATA*, data );
 
    maug_mzero( data, sizeof( struct MBEAN_DATA ) );
 
