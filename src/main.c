@@ -79,6 +79,7 @@ check_input:
 
    input = retroflat_poll_input( &input_evt );
 
+#ifndef RETROCON_DISABLE
    retrocon_input( &(data->con), &input, &input_evt, &idc_con, NULL );
    if( RETROCON_IDC_CLOSE == idc_con ) {
       /* Redraw the screen. */
@@ -88,6 +89,7 @@ check_input:
    if( RETROCON_FLAG_ACTIVE == (RETROCON_FLAG_ACTIVE & data->con.flags) ) {
       goto display;
    }
+#endif /* !RETROCON_DISABLE */
 
    switch( input ) {
    retroflat_case_key( RETROFLAT_KEY_RIGHT, RETROFLAT_PAD_RIGHT )
@@ -175,7 +177,7 @@ display:
                MBEAN_GRID_Y_PX + (y * MBEAN_BEAN_H),
                MBEAN_BEAN_W,
                MBEAN_BEAN_H,
-               1 );
+               -1 );
 #else
             retroflat_ellipse( NULL,
                data->bean_colors[data->grid[x][y] - 1],
@@ -212,7 +214,7 @@ display:
          MBEAN_GRID_Y_PX + (y * MBEAN_BEAN_H),
          MBEAN_BEAN_W,
          MBEAN_BEAN_H,
-         1 );
+         i );
 #else
       retroflat_ellipse( NULL,
          data->bean_colors[data->drops[i] - 1],
