@@ -1,7 +1,7 @@
 
 # vim: ft=make noexpandtab
 
-#VDP=1
+RETROFLAT_VDP=1
 #WASM_SDL_VER=1
 #WING=1
 FORCE_MVFS := 1
@@ -32,6 +32,12 @@ include maug/Makefile.inc
 .PHONY: clean
 
 all: mbean.$(MAUG_UNIX).sdl mbean.$(MAUG_UNIX).ale mbeanb.exe mbeannt.exe mbean.html mbeanw.exe mbeanb.exe mbean64.exe mbean.m68k.dsk mbean.$(MAUG_UNIX).xlib
+
+maug/vdp/ntsc/rvdpsdl1.so:
+	cd maug/vdp/ntsc && make rvdpsdl1.so
+
+rvdpsdl1.so: maug/vdp/ntsc/rvdpsdl1.so
+	cp -v $< $@
 
 $(eval $(call MVFS,unscii_8.hex unscii_x.hex))
 
@@ -128,5 +134,5 @@ $(eval $(call TGTMAC68K7,mbean,,mbean.bmp,mBEN))
 # Clean
 
 clean:
-	rm -rf $(CLEAN_TARGETS)
+	rm -rf $(CLEAN_TARGETS) maug/vdp/ntsc/rvdpsdl1.so
 

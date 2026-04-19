@@ -372,6 +372,9 @@ int main( int argc, char* argv[] ) {
    retroflat_set_palette( 4, 0xffffffff );
    */
 
+   /* retroflat_set_palette( RETROFLAT_COLOR_WHITE, 0xff0000ff ); */
+   /* retroflat_set_palette( RETROFLAT_COLOR_RED, 0xffffffff ); */
+
    /* retroflat_message( RETROFLAT_MSG_FLAG_WARNING, "Hello", "Beans" ); */
 
    /* === Main Loop === */
