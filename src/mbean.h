@@ -50,10 +50,6 @@
 
 #define MBEAN_WAIT_SKIP -1
 
-#define MBEAN_SND_CHANNEL 0
-
-#define MBEAN_SND_CYCLES 1
-
 /***
  * grid[X][Y]
  *
@@ -81,7 +77,6 @@ struct MBEAN_DATA {
    /*! \brief Last score drawn to the screen. */
    int16_t score_prev_draw;
    int16_t wait;
-   uint16_t snd_cycles_left;
    MAUG_MHANDLE font_h;
    /*! \brief Ignore rotate button until this ms. Special debounce measure. */
    retroflat_ms_t rotate_next;

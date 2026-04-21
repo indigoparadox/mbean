@@ -20,18 +20,6 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
    maug_mlock( data_h, data );
    maug_cleanup_if_null_alloc( struct MBEAN_DATA*, data );
 
-#ifdef MBEAN_SOUND
-   /* See if we're done playing a sound. */
-   if( 1 == data->snd_cycles_left ) {
-      debug_printf( 2, MS_FMT ": finished playing sound",
-         retroflat_get_ms() );
-      retrosnd_midi_note_off( MBEAN_SND_CHANNEL, 60, 127 );
-      data->snd_cycles_left--;
-   } else if( 0 < data->snd_cycles_left ) {
-      data->snd_cycles_left--;
-   }
-#endif /* MBEAN_SOUND */
-
    if( RETROCON_FLAG_ACTIVE == (RETROCON_FLAG_ACTIVE & data->con.flags) ) {
       /* Skip bean logic. */
       goto check_input;
@@ -45,14 +33,9 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
       MBEAN_FLAG_SETTLED == (MBEAN_FLAG_SETTLED & data->flags) &&
       0 == data->drops_sz
    ) {
-#ifdef MBEAN_SOUND
-      if( 0 == data->snd_cycles_left ) {
-         debug_printf( 2, MS_FMT ": playing sound...",
-            retroflat_get_ms() );
-         retrosnd_midi_note_on( MBEAN_SND_CHANNEL, 60, 127 );
-         data->snd_cycles_left = MBEAN_SND_CYCLES;
-      }
-#endif /* MBEAN_SOUND */
+#ifndef RETROFLAT_NO_SOUND
+      retrosnd_note_on_deadline( 2, RSN_C3, retroflat_get_ms() + 100 );
+#endif /* RETROFLAT_NO_SOUND */
 
       debug_printf( 1, MS_FMT ": attempting gc...",
          retroflat_get_ms() );
@@ -70,7 +53,7 @@ void mbean_loop( MAUG_MHANDLE data_h ) {
       retroflat_rect(
          NULL, RETROFLAT_COLOR_BLACK, 10, 10,
          40, 20,
-         RETROFLAT_FLAGS_FILL );
+         RETROFLAT_DRAW_FLAG_FILL );
    }
 
 check_input:
@@ -145,7 +128,7 @@ display:
       retroflat_rect(
          NULL, RETROFLAT_COLOR_BLACK, 0, 0,
          retroflat_screen_w(), retroflat_screen_h(),
-         RETROFLAT_FLAGS_FILL );
+         RETROFLAT_DRAW_FLAG_FILL );
       
       /* Draw rectangle border. */
       retroflat_rect(
@@ -231,7 +214,7 @@ display:
       retroflat_rect(
          NULL, RETROFLAT_COLOR_BLACK, 10, 10,
          40, 20,
-         RETROFLAT_FLAGS_FILL );
+         RETROFLAT_DRAW_FLAG_FILL );
       maug_snprintf( score_str, MBEAN_SCORE_STR_SZ_MAX,
          "Score %04d", data->score );
       retrofont_string(
@@ -244,6 +227,10 @@ display:
    retrocon_display( &(data->con), NULL );
 
    retroflat_draw_release( NULL );
+
+#ifndef RETROFLAT_NO_SOUND
+   retrosnd_pump();
+#endif /* !RETROFLAT_NO_SOUND */
 
 cleanup:
 
@@ -284,29 +271,15 @@ int main( int argc, char* argv[] ) {
    maug_mzero( &args, sizeof( struct RETROFLAT_ARGS ) );
 
    args.title = "mbean";
-   args.flags |= RETROFLAT_FLAGS_KEY_REPEAT;
+   args.flags |= RETROFLAT_STATE_FLAG_KEY_REPEAT;
 
    retval = retroflat_init( argc, argv, &args );
    maug_cleanup_if_not_ok();
 
-#ifdef MBEAN_SOUND
+#ifndef RETROFLAT_NO_SOUND
    retval = retrosnd_init( &args );
-   if( MERROR_SND == retval ) {
-      retroflat_message( RETROFLAT_MSG_FLAG_WARNING, "Sound Error",
-         "Could not setup sound device!" );
-      retval = MERROR_OK;
-   } else if( MERROR_OK != retval ) {
-      goto cleanup;
-   }
-
-#ifdef RETROSND_API_PC_BIOS
-   retrosnd_midi_set_sf_bank( "dmx_dmx.op2" );
-#endif /* RETROSND_API_PC_BIOS */
-   retrosnd_midi_set_voice( MBEAN_SND_CHANNEL, 0 );
-   /* retrosnd_midi_set_control( MBEAN_SND_CHANNEL, 7, 127 );
-   retrosnd_midi_set_control( MBEAN_SND_CHANNEL, 39, 0x3fff ); */
-
-#endif /* MBEAN_SOUND */
+   maug_cleanup_if_not_ok();
+#endif /* !RETROFLAT_NO_SOUND */
 
    debug_printf( 3, MS_FMT ": allocating data struct ("
       SIZE_T_FMT " bytes)...",
@@ -387,6 +360,11 @@ cleanup:
 
    if( (MAUG_MHANDLE)NULL != data_h ) {
       maug_mlock( data_h, data );
+#ifdef MBEAN_CACHE_BEANS
+      for( i = 0 ; MBEAN_BEANS_CT > i ; i++ ) {
+         retroflat_destroy_bitmap( &(data->bean_bmps[i]) );
+      }
+#endif /* MBEAN_CACHE_BEANS */
       retrocon_shutdown( &(data->con) );
       maug_munlock( data_h, data );
    }
